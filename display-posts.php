@@ -718,7 +718,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 $post_info .= '<a href="'.get_the_permalink($post_id).'" rel="bookmark">';
                 $post_info .= '<span class="post_title">'.$post_title.'</span>';
                 // For events, also display the date/time
-                if ( $post_type_exists('event') && 'event' ) { 
+                if ( post_type_exists('event') && 'event' ) { 
                     $event_start_datetime = get_post_meta( $post_id, '_event_start_local', true );
                     //$event_start_time = get_post_meta( $post_id, '_event_start_date', true );
                     if ( $event_start_datetime ) {

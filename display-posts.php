@@ -155,16 +155,20 @@ function get_first_image_from_post_content( $post_id ) {
 }
 
 
-function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = false ) {
+function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true ) {
     
-    $post_id = get_the_ID();
+    $info = ""; // init
+    
+    if ( $post_id === null ) {
+        $post_id = get_the_ID();
+    }
     $thumbnail_id = null; // init
     
-    if ( is_singular() ) {
+    if ( is_singular($post_id) ) {
         $imgsize = "full";
     }
     
-    $troubleshooting_info = ">> fcn birdhive_post_thumbnail <<";
+    $troubleshooting_info = "";
     $troubleshooting_info .= "post_id: $post_id<br />";
     $troubleshooting_info .= "imgsize: $imgsize<br />";
     
@@ -182,9 +186,9 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
     if ( !$thumbnail_id ) {
         
         // Check to see if the given post has a featured image
-        if ( has_post_thumbnail() ) {
+        if ( has_post_thumbnail( $post_id ) ) {
 
-            $thumbnail_id = get_post_thumbnail_id();
+            $thumbnail_id = get_post_thumbnail_id( $post_id );
             $troubleshooting_info .= "post has a featured image.<br />";
 
         } else {
@@ -215,23 +219,23 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
             }
 
             // If there's STILL no image, use a placeholder
-            // TODO: make it possible to designate placeholder image(s) for archives via CMS and retrieve it using new version of get_placeholder_img fcn
+            // TODO: make it possible to designate placeholder image(s) for archives via CMS (instead of hard-coding it here)
             // TODO: designate placeholders *per category*?? via category/taxonomy ui?
             if ( empty($thumbnail_id) ) {
-                //$thumbnail_id = null;
+                if ( is_dev_site() ) { $thumbnail_id = 121560; } else { $thumbnail_id = 121560; } // Fifth Avenue Entrance
             }
         }
     }
     
     // Make sure this is a proper context for display of the featured image
     
-    if ( post_password_required() || is_attachment() ) {
+    if ( post_password_required($post_id) || is_attachment($post_id) ) {
         
         return;
         
     } else if ( has_term( 'video-webcasts', 'event-categories' ) && is_singular('event') ) {
         
-        // featured images for events are handled via Events > Settings > Formatting AND via calendar.php (#_EVENTIMAGE)
+        // featured images for events are handled via Events > Settings > Formatting AND via allsouls-calendar.php (#_EVENTIMAGE)
         return;
         
     } else if ( has_term( 'video-webcasts', 'category' ) ) {
@@ -247,24 +251,26 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
         
 	} else if ( is_singular() && in_array( get_field('featured_image_display'), array( "background", "thumbnail", "banner" ) ) ) {
         
-        return;
+        //return; // wip
         
     }
 
     $troubleshooting_info .= "Ok to display the image!<br />";
     
     // Ok to display the image! Set up classes for styling
-    $classes = "post-thumbnail dp";
+    $classes = "post-thumbnail allsouls";
     
     // Retrieve the caption (if any) and return it for display
-    $caption = get_post( $thumbnail_id  )->post_excerpt;
-    if ( !empty($caption) ) {
-        $classes .= " has_caption";
+    if ( get_post( $thumbnail_id  ) ) {
+        $caption = get_post( $thumbnail_id  )->post_excerpt;
+        if ( !empty($caption) ) {
+            $classes .= " has_caption";
+        }
     }
     
-    if ( is_singular() ) {
+    if ( is_singular($post_id) ) {
         
-        if ( has_post_thumbnail() ) {
+        if ( has_post_thumbnail($post_id) ) {
             
             if ( is_singular('person') ) {
                 $imgsize = "medium"; // portrait
@@ -272,13 +278,11 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
             }
             
             $classes .= " is_singular";
-            ?>
-
-            <div class="<?php echo $classes; ?>">
-                <?php the_post_thumbnail( $imgsize ); ?>
-            </div><!-- .post-thumbnail -->
-
-        <?php 
+            
+            $info .= '<div class="'.$classes.'">';
+            $info .= get_the_post_thumbnail( $imgsize ); //the_post_thumbnail( $imgsize );
+            $info .= '</div><!-- .post-thumbnail -->';
+            
         }
         
     } else { 
@@ -287,14 +291,12 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
         
         $classes .= " float-left";
         //$classes .= " NOT_is_singular"; // tft
-        ?>
-
-        <a class="<?php echo $classes; ?>" href="<?php the_permalink(); ?>" aria-hidden="true">
-        <?php 
+        
+        $info .= '<a class="'.$classes.'" href="'.get_the_permalink($post_id).'" aria-hidden="true">';
         if ( $thumbnail_id ) {
             
             // display attachment via thumbnail_id
-            echo wp_get_attachment_image( $thumbnail_id, $imgsize, false, array( "class" => "featured_attachment" ) );
+            $info .= wp_get_attachment_image( $thumbnail_id, $imgsize, false, array( "class" => "featured_attachment" ) );
             
             $troubleshooting_info .= 'post_id: '.$post_id.'; thumbnail_id: '.$thumbnail_id;
             if ( isset($images)) { $troubleshooting_info .= '<pre>'.print_r($images,true).'</pre>'; }
@@ -307,15 +309,21 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
             
             $troubleshooting_info .= 'Use placeholder img';
             
-            if ( function_exists( 'get_placeholder_img' ) ) { echo get_placeholder_img(); }
+            if ( function_exists( 'get_placeholder_img' ) ) { 
+                $info .= get_placeholder_img();
+            }
         }
-        ?>
-        </a>
-
-        <?php
+        $info .= '</a>';
+        
     } // End if is_singular()
     
-    echo '<div class="troubleshooting">'.$troubleshooting_info.'</div>'; // tft
+    $info .= '<div class="troubleshooting">'.$troubleshooting_info.'</div>';
+    if ( $echo === true ) {
+        echo $info;
+        return true;
+    } else {
+        return $info;
+    }    
 
 }
 

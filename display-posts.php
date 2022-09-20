@@ -526,7 +526,7 @@ function birdhive_display_posts ( $atts = [] ) {
             //$info .= "post: ".print_r($post, true)."<br />";
             $info .= "post_id: ".$post->post_id."<br />";
             //$info .= "event_attributes: ".print_r($post->event_attributes, true)."<br />";
-            $info .= "event_series: ".$post->event_attributes['event_series']."<br />";
+            if ( isset($post->event_attributes['event_series']) ) { $info .= "event_series: ".$post->event_attributes['event_series']."<br />"; }
             //
         }
         //$info .= 'last_query: '.print_r( $wpdb->last_query, true); // '<pre></pre>'

@@ -804,7 +804,7 @@ function birdhive_display_posts ( $atts = [] ) {
 	if ( $posts ) {
         
 		//if ($a['header'] == 'true') { $info .= '<h3>Latest '.$category.' Articles:</h3>'; } // WIP
-		
+		$info .= '<div class="dp-posts">';
         if ( $return_format == "links" ) {
             $info .= '<ul>';
         } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
@@ -1038,6 +1038,7 @@ function birdhive_display_posts ( $atts = [] ) {
             $info .= '</div>';
         }
 		
+        $info .= '</div>'; // end div class="dp-posts" (wrapper)
         wp_reset_postdata();
     
     } // END if posts

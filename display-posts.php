@@ -1,10 +1,15 @@
 <?php
+/**
+ * @package Display_Posts
+ * @version 0.1
+ */
+
 /*
 Plugin Name: Birdhive Display Posts
 Version: 0.1
 Plugin URI: 
-Description: Display posts of all types in a variety of formats using shortcodes
-Author: Alison Cheeseman
+Description: Display posts of all types in a variety of formats using shortcodes.
+Author: Alison C.
 Author URI: http://birdhive.com
 Text Domain: display-posts
 */

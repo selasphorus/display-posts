@@ -219,10 +219,10 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
             }
 
             // If there's STILL no image, use a placeholder
-            // TODO: make it possible to designate placeholder image(s) for archives via CMS (instead of hard-coding it here)
+            // TODO: make it possible to designate placeholder image(s) for archives via CMS and retrieve it using new version of get_placeholder_img fcn
             // TODO: designate placeholders *per category*?? via category/taxonomy ui?
             if ( empty($thumbnail_id) ) {
-                if ( is_dev_site() ) { $thumbnail_id = 121560; } else { $thumbnail_id = 121560; } // Fifth Avenue Entrance
+                //$thumbnail_id = null;
             }
         }
     }

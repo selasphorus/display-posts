@@ -103,6 +103,58 @@ function birdhive_att_explode( $string = '' ) {
 	return explode( ',', $string );
 }
 
+// Extract first image from post content
+function get_first_image_from_post_content( $post_id ) {
+    
+    $post = get_post( $post_id );
+    
+    // init
+    $info = array();
+    $first_image = null;
+    $first_image_id = null;
+    $first_image_url = null;
+    
+    //ob_start();
+    //ob_end_clean();
+    
+    $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+    //$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
+    //echo "Matches for post_id: $post_id => <pre>".print_r($matches, true)."</pre>"; // tft
+    
+    //if ( !empty($matches) ) { 
+    if ( isset($matches[1][0]) ) {
+        $first_image = $matches[0][0];
+        $first_image_url = $matches[1][0];
+    } else {
+        //echo "Matches for post_id: $post_id => <pre>".print_r($matches, true)."</pre>"; // tft
+    }
+
+    /*if ( empty($first_image) ){ // Defines a default placeholder image
+        // Set the default image if there are no image available inside post content
+        if ( function_exists( 'get_placeholder_img' ) ) { $first_image = get_placeholder_img(); }
+        //$first_image = "/img/default.jpg";
+    }*/
+    
+    //return $first_image;
+    
+    if ( !empty($first_image) ) {
+        
+        if ( preg_match('/(wp-image-)([0-9]+)/', $first_image, $matches) ) {
+            //echo print_r($matches, true); // tft
+            $first_image_id = $matches[2];
+        }
+    }
+    
+    $info['img'] = $first_image;
+    $info['id'] = $first_image_id;
+    $info['url'] = $first_image_url;
+    
+    //return $first_image_id;
+    return $info;
+    
+}
+
+
 function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = false ) {
     
     $post_id = get_the_ID();

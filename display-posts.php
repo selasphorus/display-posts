@@ -89,6 +89,17 @@ function birdhive_posts_where( $where, $wp_query ) {
     return $where;
 }
 
+/**
+ * Explode list using "," and ", ".
+ *
+ * @param string $string String to split up.
+ * @return array Array of string parts.
+ */
+function birdhive_att_explode( $string = '' ) {
+	$string = str_replace( ', ', ',', $string );
+	return explode( ',', $string );
+}
+
 function birdhive_get_posts ( $a = array() ) {
     
     global $wpdb;

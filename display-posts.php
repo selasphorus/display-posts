@@ -164,7 +164,7 @@ function birdhive_post_thumbnail( $imgsize = "thumbnail", $use_custom_thumb = fa
         $imgsize = "full";
     }
     
-    $troubleshooting_info = "";
+    $troubleshooting_info = ">> fcn birdhive_post_thumbnail <<";
     $troubleshooting_info .= "post_id: $post_id<br />";
     $troubleshooting_info .= "imgsize: $imgsize<br />";
     

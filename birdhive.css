@@ -1,6 +1,26 @@
 @charset "UTF-8";
 /* CSS Document */
 
+.troubleshooting,
+.troubleshooting.inline {
+	display: none;
+    text-align: left;
+}
+
+.dev-view .troubleshooting {
+	display: block;
+	padding: 1rem;
+	background-color: #91F718;
+}
+
+
+.dev-view .troubleshooting.inline {
+	display: inline;
+    background-color: transparent;
+	color: #42A406;
+	padding: 0 1rem;
+	margin-bottom: 0;
+}
 
 /*** GRID & FLEX layouts -- for events, landing pages, &c. ***/
 

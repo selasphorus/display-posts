@@ -173,9 +173,9 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         $imgsize = "full";
     }
     
-    $troubleshooting_info = "";
-    $troubleshooting_info .= "post_id: $post_id<br />";
-    $troubleshooting_info .= "imgsize: $imgsize<br />";
+    $troubleshooting = "";
+    $troubleshooting .= "post_id: $post_id<br />";
+    $troubleshooting .= "imgsize: $imgsize<br />";
     
     // Are we using the custom image, if any is set?
     if ( $use_custom_thumb == true ) {    
@@ -194,11 +194,11 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         if ( has_post_thumbnail( $post_id ) ) {
 
             $thumbnail_id = get_post_thumbnail_id( $post_id );
-            $troubleshooting_info .= "post has a featured image.<br />";
+            $troubleshooting .= "post has a featured image.<br />";
 
         } else {
 
-            $troubleshooting_info .= "post has NO featured image.<br />";
+            $troubleshooting .= "post has NO featured image.<br />";
 
             // If there's no featured image, see if there are any other images that we can use instead
             $image_info = get_first_image_from_post_content( $post_id );
@@ -260,7 +260,7 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         
     }
 
-    $troubleshooting_info .= "Ok to display the image!<br />";
+    $troubleshooting .= "Ok to display the image!<br />";
     
     // Ok to display the image! Set up classes for styling
     $classes = "post-thumbnail allsouls";
@@ -303,8 +303,8 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
             // display attachment via thumbnail_id
             $info .= wp_get_attachment_image( $thumbnail_id, $imgsize, false, array( "class" => "featured_attachment" ) );
             
-            $troubleshooting_info .= 'post_id: '.$post_id.'; thumbnail_id: '.$thumbnail_id;
-            if ( isset($images)) { $troubleshooting_info .= '<pre>'.print_r($images,true).'</pre>'; }
+            $troubleshooting .= 'post_id: '.$post_id.'; thumbnail_id: '.$thumbnail_id;
+            if ( isset($images)) { $troubleshooting .= '<pre>'.print_r($images,true).'</pre>'; }
             
         } /*else if ( has_post_thumbnail() ) {
             
@@ -312,7 +312,7 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
             
         } */else {
             
-            $troubleshooting_info .= 'Use placeholder img';
+            $troubleshooting .= 'Use placeholder img';
             
             if ( function_exists( 'get_placeholder_img' ) ) { 
                 $info .= get_placeholder_img();
@@ -322,7 +322,7 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         
     } // End if is_singular()
     
-    $info .= '<div class="troubleshooting">'.$troubleshooting_info.'</div>';
+    $info .= '<div class="troubleshooting">'.$troubleshooting.'</div>';
     if ( $echo === true ) {
         echo $info;
         return true;

@@ -109,6 +109,7 @@ function birdhive_att_explode( $string = '' ) {
 }
 
 // Extract first image from post content
+if ( !function_exists( 'get_first_image_from_post_content' ) ) {
 function get_first_image_from_post_content( $post_id ) {
     
     $post = get_post( $post_id );
@@ -158,7 +159,7 @@ function get_first_image_from_post_content( $post_id ) {
     return $info;
     
 }
-
+}
 
 function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true ) {
     

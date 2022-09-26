@@ -520,7 +520,7 @@ function birdhive_get_posts ( $a = array() ) {
         if ( isset($a['meta_value']) )  { $meta_value = $a['meta_value'];   } else { $meta_value = null; }
         
         // For Events & Sermons, if those post_types exist for the current application
-        if ( isset($a['series']) )      { $series = $a['series'];       } else { $series = null; }
+        if ( isset($a['series']) )      { $series_id = $a['series'];    } else { $series_id = null; }
         
         // Deal w/ taxonomy args
         $tax_field = 'slug'; // init -- in some cases will want to use term_id
@@ -694,13 +694,13 @@ function birdhive_get_posts ( $a = array() ) {
 			}
 
 			// Sermon series?
-			if ( post_type_exists('sermon') && $post_type == 'sermon' && $series ) {
+			if ( post_type_exists('sermon') && $post_type == 'sermon' && $series_id ) {
 
 				$meta_query_components[] = 
 					array(
-						'key' => 'sermon_series',
-						'value'   => $series,
-						'compare' => '=',
+						'key' => 'sermons_series',
+                        'value' => '"' . $series_id . '"', // matches exactly "123", not just 123. This prevents a match for "1234"
+                        'compare' => 'LIKE'	
 					);
 			}
 

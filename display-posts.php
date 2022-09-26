@@ -434,6 +434,7 @@ function birdhive_get_posts ( $a = array() ) {
     // Init vars
     $arr_posts_info = array();
     $info = "";
+    $troubleshooting = "";
     $get_by_ids = false;
     $get_by_slugs = false;
     $category_link = null;
@@ -485,7 +486,7 @@ function birdhive_get_posts ( $a = array() ) {
     // NB: if IDs are specified, ignore most other args
     if ( isset($a['ids']) && !empty($a['ids']) ) {
         
-        $info .= "Getting posts by IDs: ".$a['ids'];
+        $troubleshooting .= "Getting posts by IDs: ".$a['ids'];
         
         // Turn the list of IDs into a proper array
 		$posts_in         = array_map( 'intval', birdhive_att_explode( $a['ids'] ) );
@@ -749,19 +750,21 @@ function birdhive_get_posts ( $a = array() ) {
     // -------
 	$arr_posts = new WP_Query( $args );
     
-    $info .= "WP_Query run as follows:";
-    $info .= "<pre>args: ".print_r($args, true)."</pre>"; // tft
-    //$info .= "<pre>meta_query: ".print_r($meta_query, true)."</pre>"; // tft
-	//$info .= "<pre>arr_posts: ".print_r($arr_posts, true)."</pre>"; // tft
-    //$info .= "<pre>".$arr_posts->request."</pre>"; // tft -- wip
-    //$info .= "<!-- Last SQL-Query: ".$wpdb->last_query." -->";
+    $troubleshooting .= "WP_Query run as follows:";
+    $troubleshooting .= "<pre>args: ".print_r($args, true)."</pre>"; // tft
+    //$troubleshooting .= "<pre>meta_query: ".print_r($meta_query, true)."</pre>"; // tft
+	//$troubleshooting .= "<pre>arr_posts: ".print_r($arr_posts, true)."</pre>"; // tft
 
-    $info = '<div class="troubleshooting">'.$info.'</div>';
+    $troubleshooting .= "birdhive_get_posts arr_posts->request<pre>".$arr_posts->request."</pre>"; // tft -- wip
+    $troubleshooting .= "birdhive_get_posts last_query:<pre>".$wpdb->last_query."</pre>"; // tft
+    
+    //$info = '<div class="troubleshooting">'.$info.'</div>';
     
     $arr_posts_info['arr_posts'] = $arr_posts;
     $arr_posts_info['args'] = $args;
     $arr_posts_info['category_link'] = $category_link;
     $arr_posts_info['info'] = $info;
+    $arr_posts_info['troubleshooting'] = $troubleshooting;
     
     return $arr_posts_info;
 }
@@ -773,6 +776,7 @@ function birdhive_display_posts ( $atts = [] ) {
 
     global $wpdb;
 	$info = "";
+	$troubleshooting = "";
 
 	$a = shortcode_atts( array(
         
@@ -813,7 +817,7 @@ function birdhive_display_posts ( $atts = [] ) {
         
     ), $atts );
     
-    if ( $a ) { $info .= '<div class="troubleshooting">shortcode_atts: <pre>'.print_r($a, true).'</pre></div>'; } // tft
+    if ( $a ) { $troubleshooting .= 'shortcode_atts: <pre>'.print_r($a, true).'</pre>'; } // tft
     
     $post_type = $a['post_type'];
     $return_format = $a['return_format'];
@@ -846,26 +850,27 @@ function birdhive_display_posts ( $atts = [] ) {
     	// TODO: check to see if EM plugin is installed and active?
         // TODO: deal w/ taxonomy parameters -- how to translate these properly for EM?
         $posts = EM_Events::get( $a ); // Retrieves an array of EM_Event Objects
-        //$info .= '<div class="troubleshooting">Posts retrieved using EM_Events::get: <pre>'.print_r($posts, true).'</pre></div>'; // tft
-        $info .= '<div class="troubleshooting">Posts retrieved using EM_Events::get: <pre>';
+        
+        $troubleshooting .= 'Posts retrieved using EM_Events::get: <pre>';
+        
         foreach ( $posts as $post ) {
-            //$info .= "post: ".print_r($post, true)."<br />";
-            $info .= "post_id: ".$post->post_id."<br />";
-            //$info .= "event_attributes: ".print_r($post->event_attributes, true)."<br />";
-            if ( isset($post->event_attributes['event_series']) ) { $info .= "event_series: ".$post->event_attributes['event_series']."<br />"; }
-            //
+            //$troubleshooting .= "post: ".print_r($post, true)."<br />";
+            $troubleshooting .= "post_id: ".$post->post_id."<br />";
+            //$troubleshooting .= "event_attributes: ".print_r($post->event_attributes, true)."<br />";
+            if ( isset($post->event_attributes['event_series']) ) { $troubleshooting .= "event_series: ".$post->event_attributes['event_series']."<br />"; }
         }
-        //$info .= 'last_query: '.print_r( $wpdb->last_query, true); // '<pre></pre>'
-        $info .= '</pre></div>'; // tft
+        //$troubleshooting .= 'last_query: '.print_r( $wpdb->last_query, true); // '<pre></pre>'
+        $troubleshooting .= '</pre>'; // tft
     } else {
         $posts_info = birdhive_get_posts( $a );
         $posts = $posts_info['arr_posts']->posts; // Retrieves an array of WP_Post Objects
         $info .= $posts_info['info'];
+        $troubleshooting .= $posts_info['troubleshooting'];
     }
     
-    //if ( $posts ) { $info .= '<div class="troubleshooting"><pre>'.print_r($posts, true).'</pre></div>'; } // tft
-    
-	if ( $posts ) {
+    if ( $posts ) {
+        
+        $troubleshooting .= '<pre>'.print_r($posts, true).'</pre>'; // tft
         
 		//if ($a['header'] == 'true') { $info .= '<h3>Latest '.$category.' Articles:</h3>'; } // WIP
 		$info .= '<div class="dp-posts">';
@@ -917,8 +922,8 @@ function birdhive_display_posts ( $atts = [] ) {
         
         foreach ( $posts as $post ) {
             
-            //$info .= '<pre>'.print_r($post, true).'</pre>'; // tft
-            //$info .= '<div class="troubleshooting">post: <pre>'.print_r($post, true).'</pre></div>'; // tft
+            //$troubleshooting .= '<pre>'.print_r($post, true).'</pre>'; // tft
+            //$troubleshooting .= 'post: <pre>'.print_r($post, true).'</pre>'; // tft
             
             if ( post_type_exists('event') && $post_type == 'event' ) {
                 $post_id = $post->post_id;
@@ -1107,7 +1112,13 @@ function birdhive_display_posts ( $atts = [] ) {
         
         wp_reset_postdata();
     
+    }  else {
+        
+        $troubleshooting .= "No posts found!";
+        
     } // END if posts
+    
+    $info .= '<div class="troubleshooting">'.$troubleshooting.'</div>';
     
     return $info;
     
@@ -2140,14 +2151,11 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                     $troubleshooting .= "Num arr_related_post_ids: [".count($arr_related_post_ids)."]<br />";
                     //$troubleshooting .= "arr_related_post_ids: <pre>".print_r($arr_related_post_ids,true)."</pre>"; // tft
 
-                    $info .= '<div class="troubleshooting">'.$related_posts_info['info'].'</div>';
-                    //$troubleshooting .= $related_posts_info['info']."<hr />";
-                    //$info .= $posts_info['info']."<hr />"; //$info .= "birdhive_get_posts/posts_info: ".$posts_info['info']."<hr />";
+                    $troubleshooting .= $related_posts_info['info'];
 
                     // Print last SQL query string
                     global $wpdb;
-                    $info .= '<div class="troubleshooting">'."last_query:<pre>".$wpdb->last_query."</pre>".'</div>'; // tft
-                    //$troubleshooting .= "<p>last_query:</p><pre>".$wpdb->last_query."</pre>"; // tft
+                    $troubleshooting .= "last_query: <pre>".$wpdb->last_query."</pre>"; // tft
                     
                     // WIP -- we're running an "and" so we need to find the OVERLAP between the two sets of ids... one set of repertoire ids, one of editions... hmm...
                     if ( !empty($arr_post_ids) ) {
@@ -2226,8 +2234,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
             
             if ( !empty($arr_post_ids) ) {
                     
-                //$troubleshooting .= "Num matching posts found (raw results): [".count($arr_post_ids)."]"; 
-                $info .= '<div class="troubleshooting">'."Num matching posts found (raw results): [".count($arr_post_ids)."]".'</div>'; // tft -- if there are both rep and editions, it will likely be an overcount
+                $troubleshooting .= "Num matching posts found (raw results): [".count($arr_post_ids)."]"; // tft -- if there are both rep and editions, it will likely be an overcount
                 $info .= format_search_results($arr_post_ids);
 
             } else {

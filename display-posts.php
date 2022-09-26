@@ -439,7 +439,7 @@ function birdhive_get_posts ( $a = array() ) {
     $get_by_slugs = false;
     $category_link = null;
     
-    $info .= "args as passed to birdhive_get_posts: <pre>".print_r($a,true)."</pre>";
+    $troubleshooting .= "args as passed to birdhive_get_posts: <pre>".print_r($a,true)."</pre>";
     
     // Process the args as passed
     

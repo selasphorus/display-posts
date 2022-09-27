@@ -547,7 +547,7 @@ function birdhive_get_posts ( $a = array() ) {
 
         // If not empty tax_terms and empty taxonomy, determine default taxonomy from post type
         if ( empty($taxonomy) && !empty($tax_terms) ) {
-            $info .= "Using birdhive_get_default_taxonomy"; // tft
+            $troubleshooting .= "Using birdhive_get_default_taxonomy"; // tft
             $taxonomy = birdhive_get_default_taxonomy($post_type);
         }
 
@@ -625,7 +625,7 @@ function birdhive_get_posts ( $a = array() ) {
 		} else if ( is_category() ) {
 
             // Post category archive
-            $info .= "is_category (archive)<br />";
+            $troubleshooting .= "is_category (archive)<br />";
 
             // Get archive cat_id
             // TODO: designate instead via CMS options?
@@ -658,7 +658,7 @@ function birdhive_get_posts ( $a = array() ) {
 
         } else if ( $taxonomy && $tax_terms ) {
 
-            $info .= "Building tax_query based on taxonomy & tax_terms.<br />";
+            $troubleshooting .= "Building tax_query based on taxonomy & tax_terms.<br />";
 
             $args['tax_query'] = array(
                 array(

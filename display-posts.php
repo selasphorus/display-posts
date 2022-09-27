@@ -108,6 +108,20 @@ function birdhive_att_explode( $string = '' ) {
 	return explode( ',', $string );
 }
 
+// Hide everything within and including the square brackets
+// e.g. for titles matching the pattern "{Whatever} [xxx]" or "[xxx] {Whatever}"
+if ( !function_exists( 'remove_bracketed_info' ) ) {
+    function remove_bracketed_info ( $str ) {
+
+        if (strpos($str, '[') !== false) { 
+            $str = preg_replace('/\[[^\]]*\]([^\]]*)/', trim('$1'), $str);
+            $str = preg_replace('/([^\]]*)\[[^\]]*\]/', trim('$1'), $str);
+        }
+
+        return $str;
+    }
+}
+
 // Extract first image from post content
 function get_first_image_from_post_content( $post_id ) {
     
@@ -500,7 +514,7 @@ function birdhive_get_posts ( $a = array() ) {
     // NB: if slugs are specified, ignore most other args
     if ( isset($a['slugs']) && !empty($a['slugs']) ) {
         
-        $info .= "Getting posts by slugs: ".$a['slugs'];
+        $troubleshooting .= "Getting posts by slugs: ".$a['slugs'];
         
         // Turn the list of slugs into a proper array
 		$posts_in = birdhive_att_explode( $a['slugs'] );

@@ -862,6 +862,8 @@ function birdhive_display_posts ( $atts = [] ) {
         $return_format = "links"; // default
     }
     
+    //$return_format = "links"; // tft
+    
     // Retrieve an array of posts matching the args supplied    
     if ( post_type_exists('event') && $post_type == 'event' ) {
     	// TODO: check to see if EM plugin is installed and active?
@@ -1066,7 +1068,6 @@ function birdhive_display_posts ( $atts = [] ) {
                 $post_info .= '</a>';
                 
                 $info .= '<div class="flex-box '.$spacing.'">';
-                //$info .= 'test: '.$featured_img_url; // tft
                 $info .= '<div class="flex-img">';
                 $info .= '<a href="'.get_the_permalink($post_id).'" rel="bookmark">';
                 $info .= $grid_img;
@@ -1095,9 +1096,10 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                     $info .= get_the_excerpt( $post_id );
                 } else {
+                    $info .= $post->post_content;
                     //$info .= get_the_content( $post_id );
-                    $the_content = apply_filters('the_content', get_the_content($post_id));
-                    $info .= $the_content;
+                    //$the_content = apply_filters('the_content', get_the_content($post_id));
+                    //$info .= $the_content;
                 }
                 
                 $info .= '</div><!-- .entry-content -->';

@@ -1097,9 +1097,6 @@ function birdhive_display_posts ( $atts = [] ) {
                     $info .= get_the_excerpt( $post_id );
                 } else {
                     $info .= $post->post_content;
-                    //$info .= get_the_content( $post_id );
-                    //$the_content = apply_filters('the_content', get_the_content($post_id));
-                    //$info .= $the_content;
                 }
                 
                 $info .= '</div><!-- .entry-content -->';
@@ -1108,6 +1105,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 $info .= '</footer><!-- .entry-footer -->';
                 $info .= '</article><!-- #post-'.$post_id.' -->';
 
+                // WIP is it possible to use template parts in this context?
                 //$info .= get_template_part( 'template-parts/content', 'excerpt', array('post_id' => $post_id ) ); // 
                 //$post_type_for_template = birdhive_get_type_for_template();
                 //get_template_part( 'template-parts/content', $post_type_for_template );

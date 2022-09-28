@@ -310,28 +310,31 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         $classes .= " float-left";
         //$classes .= " NOT_is_singular"; // tft
         
-        $info .= '<a class="'.$classes.'" href="'.get_the_permalink($post_id).'" aria-hidden="true">';
         if ( $thumbnail_id ) {
+        
+            $info .= '<a class="'.$classes.'" href="'.get_the_permalink($post_id).'" aria-hidden="true">';
             
             // display attachment via thumbnail_id
             $info .= wp_get_attachment_image( $thumbnail_id, $imgsize, false, array( "class" => "featured_attachment" ) );
             
             $troubleshooting .= 'post_id: '.$post_id.'; thumbnail_id: '.$thumbnail_id;
             if ( isset($images)) { $troubleshooting .= '<pre>'.print_r($images,true).'</pre>'; }
+        
+            $info .= '</a>';
             
-        } /*else if ( has_post_thumbnail() ) {
-            
-            the_post_thumbnail( $imgsize, array( 'alt' => the_title_attribute( 'echo=0' ) ) );
-            
-        } */else {
+        } else {
             
             $troubleshooting .= 'Use placeholder img';
             
             if ( function_exists( 'get_placeholder_img' ) ) { 
-                $info .= get_placeholder_img();
+                $img = get_placeholder_img();
+                if ( $img ) {
+                    $info .= '<a class="'.$classes.'" href="'.get_the_permalink($post_id).'" aria-hidden="true">';
+                    $info .= $img;
+                    $info .= '</a>';
+                }
             }
         }
-        $info .= '</a>';
         
     } // End if is_singular()
     

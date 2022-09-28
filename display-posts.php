@@ -44,6 +44,15 @@ $plugin_path = plugin_dir_path( __FILE__ );
 
 /* +~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+ */
 
+// Enqueue scripts and styles -- WIP
+add_action( 'wp_enqueue_scripts', 'dp_scripts_method' );
+function dp_scripts_method() {
+    
+    $ver = "0.1";
+    wp_enqueue_style( 'dp-style', plugin_dir_url( __FILE__ ) . 'birdhive-dp.css', NULL, $ver );
+
+}
+
 // Facilitate search by str in post_title (as oppposed to built-in search by content or by post name, aka slug)
 add_filter( 'posts_where', 'birdhive_posts_where', 10, 2 );
 function birdhive_posts_where( $where, $wp_query ) {

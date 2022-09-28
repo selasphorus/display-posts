@@ -813,7 +813,7 @@ function birdhive_display_posts ( $atts = [] ) {
         'taxonomy'  => null,
         'tax_terms'  => null,
         //
-        'return_format' => 'links', // or: 'excerpt' for single excerpt 'archive' for linked list as in search results/archives; OR 'grid' for "flex-grid"
+        'return_format' => 'links', // other options: excerpts; archives (full post content); grid; table
         'cols' => 4,
         'spacing' => 'spaced',
         'header' => false,
@@ -973,7 +973,12 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $show_images ) {
                     $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
                 }
-                $info .= get_the_excerpt( $post_id );
+                if ( $return_format == "excerpts" ) {
+                    $info .= get_the_excerpt( $post_id );
+                } else {
+                    $info .= get_the_content( $post_id );
+                }
+                
                 $info .= '</div><!-- .entry-content -->';
                 $info .= '<footer class="entry-footer">';
                 $info .= birdhive_entry_meta( $post_id );

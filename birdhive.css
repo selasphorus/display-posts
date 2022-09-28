@@ -117,3 +117,7 @@
 .flex-container.squares .flex-box {
     /*background-color:deepskyblue;*/
 }
+
+img.post-thumbnail.dp {
+    padding-top: 0.5rem;
+}

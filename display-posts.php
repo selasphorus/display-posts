@@ -813,7 +813,7 @@ function birdhive_display_posts ( $atts = [] ) {
         'taxonomy'  => null,
         'tax_terms'  => null,
         //
-        'return_format' => 'links', // other options: excerpts; archives (full post content); grid; table
+        'return_format' => 'links', // other options: excerpts; archive (full post content); grid; table
         'cols' => 4,
         'spacing' => 'spaced',
         'header' => false,
@@ -858,7 +858,7 @@ function birdhive_display_posts ( $atts = [] ) {
     
     // Make sure the return_format is valid
     // TODO: revive/fix "archive" option -- deal w/ get_template_part issue...
-    if ( $return_format != "links" && $return_format != "grid" && $return_format != "excerpts" && $return_format != "table" ) {
+    if ( $return_format != "links" && $return_format != "table" && $return_format != "grid" && $return_format != "excerpts" && $return_format != "archive" ) {
         $return_format = "links"; // default
     }
     
@@ -894,8 +894,6 @@ function birdhive_display_posts ( $atts = [] ) {
         
         if ( $return_format == "links" ) {
             $info .= '<ul>';
-        } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
-            $info .= '<div class="posts_archive">';
         } else if ( $return_format == "table" ) {
             
             $info .= '<table class="posts_archive">'; //$info .= '<table class="posts_archive '.$class.'">';
@@ -935,6 +933,8 @@ function birdhive_display_posts ( $atts = [] ) {
             $colclass = digit_to_word($num_cols)."col";
             if ( $class ) { $colclass .= " ".$class; }
             $info .= '<div class="flex-container '.$colclass.'">';
+        } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
+            $info .= '<div class="posts_archive">';
         }
         
         foreach ( $posts as $post ) {
@@ -959,36 +959,6 @@ function birdhive_display_posts ( $atts = [] ) {
                 $info .= '<li>';
                 $info .= '<a href="'.get_the_permalink( $post_id ).'" rel="bookmark">'.$post_title.'</a>';
                 $info .= '</li>';
-                
-            } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
-                
-                // TODO: bring this more in alignment with theme template display? e.g. content-excerpt, content-sermon, content-event...
-                $info .= '<!-- wpt/adapted: content-excerpt -->';
-                $info .= '<article id="post-'.$post_id.'">'; // post_class()
-                $info .= '<header class="entry-header">';
-                $info .= '<h2 class="entry-title"><a href="'.get_the_permalink( $post_id ).'" rel="bookmark">'.$post_title.'</a></h2>';
-                $info .= '</header><!-- .entry-header -->';
-                $info .= '<div class="entry-content">';
-                //$info .= birdhive_post_thumbnail($post_id);
-                if ( $show_images ) {
-                    $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
-                }
-                if ( $return_format == "excerpts" ) {
-                    $info .= get_the_excerpt( $post_id );
-                } else {
-                    $info .= get_the_content( $post_id );
-                }
-                
-                $info .= '</div><!-- .entry-content -->';
-                $info .= '<footer class="entry-footer">';
-                $info .= birdhive_entry_meta( $post_id );
-                $info .= '</footer><!-- .entry-footer -->';
-                $info .= '</article><!-- #post-'.$post_id.' -->';
-
-                //$info .= get_template_part( 'template-parts/content', 'excerpt', array('post_id' => $post_id ) ); // 
-                //$post_type_for_template = birdhive_get_type_for_template();
-                //get_template_part( 'template-parts/content', $post_type_for_template );
-                //$info .= get_template_part( 'template-parts/content', $post_type );
                 
             } else if ( $return_format == "table" ) {
                 
@@ -1109,6 +1079,36 @@ function birdhive_display_posts ( $atts = [] ) {
                 }
                 $info .= '</div>';
                 
+            } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
+                
+                // TODO: bring this more in alignment with theme template display? e.g. content-excerpt, content-sermon, content-event...
+                $info .= '<!-- wpt/adapted: content-excerpt -->';
+                $info .= '<article id="post-'.$post_id.'">'; // post_class()
+                $info .= '<header class="entry-header">';
+                $info .= '<h2 class="entry-title"><a href="'.get_the_permalink( $post_id ).'" rel="bookmark">'.$post_title.'</a></h2>';
+                $info .= '</header><!-- .entry-header -->';
+                $info .= '<div class="entry-content">';
+                //$info .= birdhive_post_thumbnail($post_id);
+                if ( $show_images ) {
+                    $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
+                }
+                if ( $return_format == "excerpts" ) {
+                    $info .= get_the_excerpt( $post_id );
+                } else {
+                    $info .= get_the_content( $post_id );
+                }
+                
+                $info .= '</div><!-- .entry-content -->';
+                $info .= '<footer class="entry-footer">';
+                $info .= birdhive_entry_meta( $post_id );
+                $info .= '</footer><!-- .entry-footer -->';
+                $info .= '</article><!-- #post-'.$post_id.' -->';
+
+                //$info .= get_template_part( 'template-parts/content', 'excerpt', array('post_id' => $post_id ) ); // 
+                //$post_type_for_template = birdhive_get_type_for_template();
+                //get_template_part( 'template-parts/content', $post_type_for_template );
+                //$info .= get_template_part( 'template-parts/content', $post_type );
+                
             } else {
                 
                 $the_content = apply_filters('the_content', get_the_content($post_id));
@@ -1122,11 +1122,11 @@ function birdhive_display_posts ( $atts = [] ) {
         if ( $return_format == "links" ) {
             //if ( ! is_archive() && ! is_category() ) { $info .= '<li>'.$category_link.'</li>'; }
             $info .= '</ul>';
-        } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
-            $info .= '</div>';
         } else if ( $return_format == "table" ) {
             $info .= '</table>';
         } else if ( $return_format == "grid" ) {
+            $info .= '</div>';
+        } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
             $info .= '</div>';
         }
 		

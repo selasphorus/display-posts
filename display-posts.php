@@ -253,7 +253,7 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         
     } else if ( has_term( 'video-webcasts', 'event-categories' ) && is_singular('event') ) {
         
-        // featured images for events are handled via Events > Settings > Formatting AND via allsouls-calendar.php (#_EVENTIMAGE)
+        // featured images for events are handled via Events > Settings > Formatting AND via events.php (?) (#_EVENTIMAGE)
         return;
         
     } else if ( has_term( 'video-webcasts', 'category' ) ) {
@@ -276,7 +276,7 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
     $troubleshooting .= "Ok to display the image!<br />";
     
     // Ok to display the image! Set up classes for styling
-    $classes = "post-thumbnail allsouls";
+    $classes = "post-thumbnail dp";
     
     // Retrieve the caption (if any) and return it for display
     if ( get_post( $thumbnail_id  ) ) {

@@ -1082,7 +1082,7 @@ function birdhive_display_posts ( $atts = [] ) {
             } else if ( $return_format == "excerpts" || $return_format == "archive" ) {
                 
                 // TODO: bring this more in alignment with theme template display? e.g. content-excerpt, content-sermon, content-event...
-                $info .= '<!-- wpt/adapted: content-excerpt -->';
+                $info .= '<!-- '.$return_format.' -->';
                 $info .= '<article id="post-'.$post_id.'">'; // post_class()
                 $info .= '<header class="entry-header">';
                 $info .= '<h2 class="entry-title"><a href="'.get_the_permalink( $post_id ).'" rel="bookmark">'.$post_title.'</a></h2>';
@@ -1095,7 +1095,9 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                     $info .= get_the_excerpt( $post_id );
                 } else {
-                    $info .= get_the_content( $post_id );
+                    //$info .= get_the_content( $post_id );
+                    $the_content = apply_filters('the_content', get_the_content($post_id));
+                    $info .= $the_content;
                 }
                 
                 $info .= '</div><!-- .entry-content -->';

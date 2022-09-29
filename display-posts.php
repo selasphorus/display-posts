@@ -483,7 +483,7 @@ function birdhive_get_posts ( $a = array() ) {
     if ( isset($a['_meta_or_tax']) ){ $_meta_or_tax = $a['_meta_or_tax']; } else { $_meta_or_tax = null; }
     //
     if ( isset($a['post_type']) )   { $post_type = $a['post_type']; } else { $post_type = 'post'; }
-    if ( isset($a['post_status']) ) { $post_status = $a['post_status']; } else { $post_status = array( 'publish', 'draft' ); }
+    if ( isset($a['post_status']) ) { $post_status = $a['post_status']; } else { $post_status = array( 'publish' ); } // , 'draft'
     //
     if ( isset($a['order']) )       { $order = $a['order'];         } else { $order = null; }
     if ( isset($a['orderby']) )     { $orderby = $a['orderby'];     } else { $orderby = null; }

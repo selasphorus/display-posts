@@ -5,6 +5,8 @@ jQuery(document).ready( function($){
 	// Toggling
     $( "p.event-excerpt > span.see-more-text" ).click(function() {
         
+        alert("click");
+        
         /*
         var id = $(this).attr('id');
         var item_id = id.substr(14); // e.g. toggle_handle_35381

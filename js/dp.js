@@ -5,11 +5,9 @@ jQuery(document).ready( function($){
 	// Toggling
     //$( "p.expandable-excerpt > span.more-text" ).click(function() {
     $( "span.more-text" ).click(function() {
-        
-        //alert("click");
-        $(this).toggleClass( "hide" );
-		$(this).next('span.excerpt-full').toggleClass( "hide" );
-		$(this).next('span.less-text').toggleClass( "hide" );
+    
+    	$(this).toggleClass( "hide" );
+    	$(this).next('span.excerpt-full').toggleClass( "hide" );
         
     });
     

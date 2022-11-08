@@ -879,6 +879,7 @@ function birdhive_display_posts ( $atts = [] ) {
         'has_image' => false, // set to true to ONLY return posts with features images
         'class' => null, // for additional styling
         'show_images' => false,
+        'expandable' => false, // for excerpts
         
         // For post_type 'event'
         'scope' => 'upcoming',
@@ -1152,7 +1153,12 @@ function birdhive_display_posts ( $atts = [] ) {
                     $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
                 }
                 if ( $return_format == "excerpts" ) {
-                    $info .= get_the_excerpt( $post_id ); // WIP
+                	if ( $expandable == true ) {
+                		$excerpt = expandable_excerpt(get_the_excerpt( $post_id ) );
+                    	$info .= $excerpt; // WIP
+                	} else {
+                		$info .= get_the_excerpt( $post_id ); // WIP
+                	}
                 } else {
                     $info .= $post->post_content;
                 }

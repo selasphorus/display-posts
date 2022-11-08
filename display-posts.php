@@ -459,7 +459,7 @@ function dp_get_excerpt( $args = array() ) {
 	// Defaults
 	$defaults = array(
 		'post'            => '',
-		//'post_id'         => null,
+		'post_id'         => null,
 		'length'          => 55, // num words
 		'readmore'        => false,
 		'readmore_text'   => esc_html__( 'Read more', 'dp' ),
@@ -480,13 +480,22 @@ function dp_get_excerpt( $args = array() ) {
 	// Extract
 	extract( $args );
 
-	// Get global post data
-	if ( ! $post ) {
-		global $post;
-	}
+	if ( $post_id ) {
+	
+		$post = get_post( $post_id );
+		
+	} else {
+	
+		// Get global post data
+		if ( ! $post ) {
+			global $post;
+		}
 
-	// Get post ID
-	$post_id = $post->ID;
+		// Get post ID
+		$post_id = $post->ID;
+		
+	}
+	
 
 	// Check for custom excerpt
 	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
@@ -1304,10 +1313,12 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( is_dev_site() ) {
-                		//$info .= dp_get_excerpt( 'post' => $post );
+                		$info .= dp_get_excerpt( 'post_id' => $post_id );
                 		//$info .= $post->post_excerpt;
+                	} else {
+                		$info .= get_the_excerpt( $post_id );
                 	}
-                	$info .= get_the_excerpt( $post_id );
+                	
                 	/*if ( $expandable == true ) {
                 		$excerpt = expandable_excerpt(get_the_excerpt( $post_id ) );
                     	$info .= $excerpt; // WIP

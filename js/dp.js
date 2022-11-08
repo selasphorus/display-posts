@@ -3,25 +3,24 @@ jQuery(document).ready( function($){
 	// see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 	
 	// Toggling
-    $( "p.event-excerpt > span.see-more-text" ).click(function() {
+    //$( "p.expandable-excerpt > span.more-text" ).click(function() {
+    $( "span.more-text" ).click(function() {
         
         //alert("click");
         $(this).toggleClass( "hide" );
 		$(this).next('span.excerpt-full').toggleClass( "hide" );
-				
-        /*
-        var id = $(this).attr('id');
-        var item_id = id.substr(14); // e.g. toggle_handle_35381
-        var target_id = "#toggle_target_"+item_id;
-        console.log('item_id: '+item_id+"; target_id: "+target_id);
-        $( target_id ).toggle( "fast", function() {
-            // Animation complete.
-        });
-        */
+        
+    });
+    
+    $( "span.less-text" ).click(function() {
+        
+        //alert("click");
+        $(this).toggleClass( "hide" );
+		$(this).prev('span.excerpt-full').toggleClass( "hide" );
         
     });
 	
-	/*let expandables = $('p.event-excerpt > span.see-more-text');
+	/*let expandables = $('p.expandable-excerpt > span.expander-text');
 	
 	expandables.each( function(){
 	

@@ -6,8 +6,8 @@ jQuery(document).ready( function($){
     $( "p.event-excerpt > span.see-more-text" ).click(function() {
         
         //alert("click");
-        //$(this).classList.toggle("hide");
-		$(this).nextElementSibling.classList.toggle("hide");
+        $(this).toggleClass( "hide" );
+		$(this).nextElementSibling.toggleClass( "hide" );
 				
         /*
         var id = $(this).attr('id');

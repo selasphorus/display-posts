@@ -470,6 +470,7 @@ function dp_get_excerpt( $args = array() ) {
 		'readmore_after'  => '',
 		'custom_excerpts' => true,
 		'disable_more'    => false,
+		'expandable'    => false,
 	);
 
 	// Apply filters
@@ -508,7 +509,12 @@ function dp_get_excerpt( $args = array() ) {
 	// Check for custom excerpt
 	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
 		
-		$info .= $post->post_excerpt;
+		if ( $expandable ) {
+			$info .= expandable_excerpt( $post->post_excerpt );
+			//$info .= expandable_excerpt(get_the_excerpt( $post_id ) );
+		} else {
+			$info .= $post->post_excerpt;
+		}		
 		
 		// Add readmore to excerpt if enabled
 		if ( $readmore ) {
@@ -552,7 +558,7 @@ function dp_get_excerpt( $args = array() ) {
 function expandable_excerpt($excerpt) {
 	$split = explode(" ", $excerpt); //convert string to array
 	$len = count($split); //get number of words
-	$words_to_show_first = 19; //Word to be dsiplayed first
+	$words_to_show_first = 19; // Word to be dsiplayed first
 	if ($len > $words_to_show_first) { //check if it's longer the than first part
 
 		$firsthalf = array_slice($split, 0, $words_to_show_first);
@@ -1323,18 +1329,12 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( is_dev_site() ) {
-                		$info .= dp_get_excerpt( array('post_id' => $post_id) );
+                		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable) );
                 		//$info .= $post->post_excerpt;
                 	} else {
                 		$info .= get_the_excerpt( $post_id );
                 	}
                 	
-                	/*if ( $expandable == true ) {
-                		$excerpt = expandable_excerpt(get_the_excerpt( $post_id ) );
-                    	$info .= $excerpt; // WIP
-                	} else {
-                		$info .= get_the_excerpt( $post_id ); // WIP
-                	}*/
                 } else {
                     $info .= $post->post_content;
                 }

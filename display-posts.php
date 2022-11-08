@@ -502,18 +502,24 @@ function dp_get_excerpt( $args = array() ) {
 		
 	}
 	
-
+	// Set up the "Read more" link
+	$readmore_link = '<a href="' . get_permalink( $post_id ) . '" class="readmore">' . $readmore_text . $readmore_after . '</a>';
+	 
 	// Check for custom excerpt
 	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
 		
 		$info .= $post->post_excerpt;
 		
+		// Add readmore to excerpt if enabled
+		if ( $readmore ) {
+			$readmore_link = "&nbsp;".$readmore_link;
+			$info .= apply_filters( 'dp_readmore_link', $readmore_link );
+		}
+		
 	} else {
 		
 		// No custom excerpt...so let's generate one
-        
-        $readmore_link = '<br /><a href="' . get_permalink( $post_id ) . '" class="readmore">' . $readmore_text . $readmore_after . '</a>';
-
+		
 		// Check for "more" tag and return content, if it exists
 		if ( ! $disable_more && strpos( $post->post_content, '<!--more-->' ) ) {
 			
@@ -528,9 +534,8 @@ function dp_get_excerpt( $args = array() ) {
 
 			// Add readmore to excerpt if enabled
 			if ( $readmore ) {
-
-				//$info .= apply_filters( 'dp_readmore_link', $readmore_link );
-
+				$readmore_link = "&nbsp;. . . ".$readmore_link;
+				$info .= apply_filters( 'dp_readmore_link', $readmore_link );
 			}
 
 		}

@@ -459,9 +459,10 @@ function dp_get_excerpt( $args = array() ) {
 	// Defaults
 	$defaults = array(
 		'post'            => '',
-		'length'          => 40,
+		//'post_id'         => null,
+		'length'          => 55, // num words
 		'readmore'        => false,
-		'readmore_text'   => esc_html__( 'read more', 'text-domain' ),
+		'readmore_text'   => esc_html__( 'Read more', 'dp' ),
 		'readmore_after'  => '',
 		'custom_excerpts' => true,
 		'disable_more'    => false,
@@ -489,22 +490,24 @@ function dp_get_excerpt( $args = array() ) {
 
 	// Check for custom excerpt
 	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
+		
 		$output = $post->post_excerpt;
-	}
-
-	// No custom excerpt...so lets generate one
-	else {
+		
+	} else {
+		
+		// No custom excerpt...so let's generate one
         
         $readmore_link = '<br /><a href="' . get_permalink( $post_id ) . '" class="readmore">' . $readmore_text . $readmore_after . '</a>';
 
-		// Check for more tag and return content if it exists
+		// Check for "more" tag and return content, if it exists
 		if ( ! $disable_more && strpos( $post->post_content, '<!--more-->' ) ) {
+			
 			$output = apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
-		}
-
-		// No more tag defined so generate excerpt using wp_trim_words
-		else {
-
+			
+		} else {
+		
+			// No "more" tag defined, so generate excerpt using wp_trim_words
+			
 			// Generate excerpt
 			$output = wp_trim_words( strip_shortcodes( $post->post_content ), $length );
 
@@ -1299,6 +1302,11 @@ function birdhive_display_posts ( $atts = [] ) {
                     $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
                 }
                 if ( $return_format == "excerpts" ) {
+                	
+                	if ( is_dev_site() ) {
+                		$info .= dp_get_excerpt( 'post' => $post );
+                		//$info .= $post->post_excerpt;
+                	}
                 	$info .= get_the_excerpt( $post_id );
                 	/*if ( $expandable == true ) {
                 		$excerpt = expandable_excerpt(get_the_excerpt( $post_id ) );

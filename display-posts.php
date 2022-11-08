@@ -478,7 +478,7 @@ function dp_get_excerpt( $args = array() ) {
 	// Parse args
 	$args = wp_parse_args( $args, $defaults );
 	
-	$info .= "args: <pre>".print_r($args, true)."</pre>";
+	//$info .= "args: <pre>".print_r($args, true)."</pre>";
 
 	// Apply filters to args
 	//$args = apply_filters( 'dp_get_excerpt_args', $defaults );
@@ -488,7 +488,6 @@ function dp_get_excerpt( $args = array() ) {
 
 	if ( $post_id ) {
 	
-		//$info .= "post_id: ".$post_id."<br />";
 		$post = get_post( $post_id );
 		
 	} else {

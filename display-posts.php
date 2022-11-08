@@ -458,7 +458,7 @@ function dp_get_excerpt( $args = array() ) {
 
 	$info = ""; // init
 	
-	$info .= "args: <pre>".print_r($args)."</pre>";
+	$info .= "args: <pre>".print_r($args, true)."</pre>";
 	
 	// Defaults
 	$defaults = array(

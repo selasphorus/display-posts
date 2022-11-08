@@ -559,7 +559,7 @@ function expandable_excerpt($excerpt) {
 
 	$split = explode(" ", $excerpt); // convert string to array
 	$len = count($split); // get number of in excerpt
-	$num_words_preview = 55; // Number of words to be displayed in closed state
+	$num_words_preview = 20; // Number of words to be displayed in closed state
 	
 	if ($len > $num_words_preview) { //check if it's longer the than first part
 

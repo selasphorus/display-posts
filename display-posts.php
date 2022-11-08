@@ -1313,7 +1313,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( is_dev_site() ) {
-                		$info .= dp_get_excerpt( 'post_id' => $post_id );
+                		$info .= dp_get_excerpt( array('post_id' => $post_id) );
                 		//$info .= $post->post_excerpt;
                 	} else {
                 		$info .= get_the_excerpt( $post_id );

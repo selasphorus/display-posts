@@ -121,3 +121,13 @@
 .post-thumbnail.dp img {
     padding-top: 0.5rem;
 }
+
+/*** Excerpts ***/
+
+.excerpt-full.hide {
+	display: none;
+}
+
+.see-more-text.hide {
+	display: none;
+}

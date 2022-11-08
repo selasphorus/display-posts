@@ -49,7 +49,7 @@ add_action( 'wp_enqueue_scripts', 'dp_scripts_method' );
 function dp_scripts_method() {
     
     $ver = "0.1";
-    wp_enqueue_style( 'dp-style', plugin_dir_url( __FILE__ ) . 'birdhive-dp.css', NULL, $ver );
+    wp_enqueue_style( 'dp-style', plugin_dir_url( __FILE__ ) . 'dp.css', NULL, $ver );
 
 }
 
@@ -146,6 +146,9 @@ if ( !function_exists( 'remove_bracketed_info' ) ) {
         return $str;
     }
 }
+
+
+/*** IMAGE FUNCTIONS ***/
 
 // Extract first image from post content
 function get_first_image_from_post_content( $post_id ) {
@@ -373,6 +376,30 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
 
 }
 
+
+/*** EXCERPTS AND ENTRY META ***/
+
+function expandable_excerpt($excerpt) {
+	$split = explode(" ", $excerpt); //convert string to array
+	$len = count($split); //get number of words
+	$words_to_show_first = 19; //Word to be dsiplayed first
+	if ($len > $words_to_show_first) { //check if it's longer the than first part
+
+		$firsthalf = array_slice($split, 0, $words_to_show_first);
+		$secondhalf = array_slice($split, $words_to_show_first, $len - 1);
+		$output = '<p class="event-excerpt" >';
+		$output .= implode(' ', $firsthalf) . '<span class="see-more-text">...see more</span>';
+
+		$output .= '<span class="excerpt-full hide">';
+		$output .= ' ' . implode(' ', $secondhalf);
+		$output .= '</span>';
+		$output .= '</p>';
+	} else {
+		$output = '<p class="event-excerpt">'  .   $excerpt . '</p>';
+	}
+	return $output;
+}
+
 /**
  * Prints HTML with meta information for the categories, tags.
  * This function is a version of twentysixteen_entry_meta
@@ -394,6 +421,9 @@ function birdhive_entry_meta() {
     }
 
 }
+
+
+/*** TAXONOMY-RELATED FUNCTIONS ***/
 
 // Function to determine default taxonomy for a given post_type, for use with display_posts shortcode, &c.
 function birdhive_get_default_taxonomy ( $post_type = null ) {
@@ -1119,7 +1149,7 @@ function birdhive_display_posts ( $atts = [] ) {
                     $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
                 }
                 if ( $return_format == "excerpts" ) {
-                    $info .= get_the_excerpt( $post_id );
+                    $info .= get_the_excerpt( $post_id ); // WIP
                 } else {
                     $info .= $post->post_content;
                 }
@@ -1228,6 +1258,7 @@ function match_group_field ( $field_groups, $field_name ) {
     
     return $field;
 }
+
 
 /***  SEARCH FORM ***/
 

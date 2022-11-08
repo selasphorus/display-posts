@@ -382,6 +382,8 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
 
 /*** EXCERPTS AND ENTRY META ***/
 
+// WIP -- not fully functional yet -- issues w/ JS
+// see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 function expandable_excerpt($excerpt) {
 	$split = explode(" ", $excerpt); //convert string to array
 	$len = count($split); //get number of words
@@ -1154,12 +1156,13 @@ function birdhive_display_posts ( $atts = [] ) {
                     $info .= birdhive_post_thumbnail($post_id,'thumbnail',false,false); // function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true )
                 }
                 if ( $return_format == "excerpts" ) {
-                	if ( $expandable == true ) {
+                	$info .= get_the_excerpt( $post_id );
+                	/*if ( $expandable == true ) {
                 		$excerpt = expandable_excerpt(get_the_excerpt( $post_id ) );
                     	$info .= $excerpt; // WIP
                 	} else {
                 		$info .= get_the_excerpt( $post_id ); // WIP
-                	}
+                	}*/
                 } else {
                     $info .= $post->post_content;
                 }

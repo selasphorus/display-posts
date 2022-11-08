@@ -456,6 +456,8 @@ endif;
  */
 function dp_get_excerpt( $args = array() ) {
 
+	$info = ""; // init
+	
 	// Defaults
 	$defaults = array(
 		'post'            => '',
@@ -473,6 +475,8 @@ function dp_get_excerpt( $args = array() ) {
 
 	// Parse args
 	$args = wp_parse_args( $args, $defaults );
+	
+	$info .= "args: <pre>".print_r($args)."</pre>";
 
 	// Apply filters to args
 	$args = apply_filters( 'dp_get_excerpt_args', $defaults );
@@ -482,7 +486,7 @@ function dp_get_excerpt( $args = array() ) {
 
 	if ( $post_id ) {
 	
-		return ( "post_id: ".$post_id );
+		//$info .= "post_id: ".$post_id."<br />";
 		$post = get_post( $post_id );
 		
 	} else {
@@ -501,7 +505,7 @@ function dp_get_excerpt( $args = array() ) {
 	// Check for custom excerpt
 	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
 		
-		$output = $post->post_excerpt;
+		$info .= $post->post_excerpt;
 		
 	} else {
 		
@@ -512,19 +516,19 @@ function dp_get_excerpt( $args = array() ) {
 		// Check for "more" tag and return content, if it exists
 		if ( ! $disable_more && strpos( $post->post_content, '<!--more-->' ) ) {
 			
-			$output = apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
+			$info .= apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
 			
 		} else {
 		
 			// No "more" tag defined, so generate excerpt using wp_trim_words
 			
 			// Generate excerpt
-			$output = wp_trim_words( strip_shortcodes( $post->post_content ), $length );
+			$info .= wp_trim_words( strip_shortcodes( $post->post_content ), $length );
 
 			// Add readmore to excerpt if enabled
 			if ( $readmore ) {
 
-				$output .= apply_filters( 'dp_readmore_link', $readmore_link );
+				$info .= apply_filters( 'dp_readmore_link', $readmore_link );
 
 			}
 
@@ -533,7 +537,7 @@ function dp_get_excerpt( $args = array() ) {
 	}
 
 	// Apply filters and echo
-	return apply_filters( 'dp_get_excerpt', $output );
+	return apply_filters( 'dp_get_excerpt', $info );
 
 }
 

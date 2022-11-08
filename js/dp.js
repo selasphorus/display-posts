@@ -7,7 +7,7 @@ jQuery(document).ready( function($){
         
         //alert("click");
         $(this).toggleClass( "hide" );
-		$(this).nextElementSibling.toggleClass( "hide" );
+		$(this).next('span.excerpt-full').toggleClass( "hide" );
 				
         /*
         var id = $(this).attr('id');

@@ -51,7 +51,7 @@ function dp_scripts_method() {
     $ver = "0.1";
     wp_enqueue_style( 'dp-style', plugin_dir_url( __FILE__ ) . 'dp.css', NULL, $ver );
     
-    wp_register_script('dp-js', plugin_dir_url( __FILE__ ) . '/js/dp.js', array( 'jquery' ) );
+    wp_register_script('dp-js', plugin_dir_url( __FILE__ ) . 'js/dp.js', array( 'jquery' ) );
 	wp_enqueue_script('dp-js');	
 
 }

@@ -128,6 +128,7 @@
 	display: none;
 }
 
-.see-more-text.hide {
+.more-text.hide,
+.less-text.hide {
 	display: none;
 }

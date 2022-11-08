@@ -899,6 +899,7 @@ function birdhive_display_posts ( $atts = [] ) {
     $return_format = $a['return_format'];
     $class = $a['class'];
     $show_images = $a['show_images'];
+    $expandable = $a['expandable'];
     
     // For grid format:
     $num_cols = $a['cols'];

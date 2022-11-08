@@ -1304,7 +1304,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( is_dev_site() ) {
-                		$info .= dp_get_excerpt( 'post' => $post );
+                		//$info .= dp_get_excerpt( 'post' => $post );
                 		//$info .= $post->post_excerpt;
                 	}
                 	$info .= get_the_excerpt( $post_id );

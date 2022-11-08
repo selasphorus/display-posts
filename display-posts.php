@@ -382,6 +382,149 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
 
 /*** EXCERPTS AND ENTRY META ***/
 
+
+// Allow select HTML tags in excerpts
+// https://wordpress.stackexchange.com/questions/141125/allow-html-in-excerpt
+function dp_allowedtags() {
+    return '<style>,<br>,<em>,<strong>'; 
+}
+
+if ( ! function_exists( 'wpse_custom_wp_trim_excerpt' ) ) : 
+
+    function wpse_custom_wp_trim_excerpt($excerpt) {
+        
+        global $post;
+        
+        $raw_excerpt = $excerpt;
+        if ( '' == $excerpt ) {
+
+            $excerpt = get_the_content('');
+            $excerpt = strip_shortcodes( $excerpt );
+            $excerpt = apply_filters('the_content', $excerpt);
+            $excerpt = str_replace(']]>', ']]&gt;', $excerpt);
+            $excerpt = strip_tags($excerpt, dp_allowedtags()); /*IF you need to allow just certain tags. Delete if all tags are allowed */
+
+            //Set the excerpt word count and only break after sentence is complete.
+            $excerpt_word_count = 75;
+            $excerpt_length = apply_filters('excerpt_length', $excerpt_word_count); 
+            $tokens = array();
+            $excerptOutput = '';
+            $count = 0;
+
+            // Divide the string into tokens; HTML tags, or words, followed by any whitespace
+            preg_match_all('/(<[^>]+>|[^<>\s]+)\s*/u', $excerpt, $tokens);
+
+            foreach ($tokens[0] as $token) { 
+
+                if ($count >= $excerpt_length && preg_match('/[\,\;\?\.\!]\s*$/uS', $token)) { 
+                // Limit reached, continue until , ; ? . or ! occur at the end
+                    $excerptOutput .= trim($token);
+                    break;
+                }
+
+                // Add words to complete sentence
+                $count++;
+
+                // Append what's left of the token
+                $excerptOutput .= $token;
+            }
+
+            $excerpt = trim(force_balance_tags($excerptOutput));
+            
+            // After the content
+            $excerpt .= atc_excerpt_more( '' );
+
+            return $excerpt;   
+
+        } else if ( has_excerpt( $post->ID ) ) {
+            //$excerpt .= atc_excerpt_more( '' );
+            //$excerpt .= "***";
+        }
+        return apply_filters('wpse_custom_wp_trim_excerpt', $wpse_excerpt, $raw_excerpt);
+    }
+
+endif; 
+
+// Replace trim_excerpt function -- temp disabled for troubleshooting
+//remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+//add_filter('get_the_excerpt', 'wpse_custom_wp_trim_excerpt'); 
+
+/* Function to allow for multiple different excerpt lengths as needed
+ * Call as follows:
+ * Adapted from https://www.wpexplorer.com/custom-excerpt-lengths-wordpress/
+ *
+ */
+function dp_get_excerpt( $args = array() ) {
+
+	// Defaults
+	$defaults = array(
+		'post'            => '',
+		'length'          => 40,
+		'readmore'        => false,
+		'readmore_text'   => esc_html__( 'read more', 'text-domain' ),
+		'readmore_after'  => '',
+		'custom_excerpts' => true,
+		'disable_more'    => false,
+	);
+
+	// Apply filters
+	$defaults = apply_filters( 'dp_get_excerpt_defaults', $defaults );
+
+	// Parse args
+	$args = wp_parse_args( $args, $defaults );
+
+	// Apply filters to args
+	$args = apply_filters( 'dp_get_excerpt_args', $defaults );
+
+	// Extract
+	extract( $args );
+
+	// Get global post data
+	if ( ! $post ) {
+		global $post;
+	}
+
+	// Get post ID
+	$post_id = $post->ID;
+
+	// Check for custom excerpt
+	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
+		$output = $post->post_excerpt;
+	}
+
+	// No custom excerpt...so lets generate one
+	else {
+        
+        $readmore_link = '<br /><a href="' . get_permalink( $post_id ) . '" class="readmore">' . $readmore_text . $readmore_after . '</a>';
+
+		// Check for more tag and return content if it exists
+		if ( ! $disable_more && strpos( $post->post_content, '<!--more-->' ) ) {
+			$output = apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
+		}
+
+		// No more tag defined so generate excerpt using wp_trim_words
+		else {
+
+			// Generate excerpt
+			$output = wp_trim_words( strip_shortcodes( $post->post_content ), $length );
+
+			// Add readmore to excerpt if enabled
+			if ( $readmore ) {
+
+				$output .= apply_filters( 'dp_readmore_link', $readmore_link );
+
+			}
+
+		}
+
+	}
+
+	// Apply filters and echo
+	return apply_filters( 'dp_get_excerpt', $output );
+
+}
+
+
 // WIP -- not fully functional yet -- issues w/ JS
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 function expandable_excerpt($excerpt) {
@@ -1350,7 +1493,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
     if ( $a['fields'] ) {
         
         // Turn the fields list into an array
-        $arr_fields = stc_att_explode( $a['fields'] );
+        $arr_fields = sdg_att_explode( $a['fields'] );
         //$info .= print_r($arr_fields, true); // tft
         
         // e.g. http://stthomas.choirplanner.com/library/search.php?workQuery=Easter&composerQuery=Williams
@@ -1586,7 +1729,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                     $field_info .= "field_type: $field_type<br />"; // tft
                     
                     if ( !empty($field_value) ) {
-                        $field_value = stc_sanitize($field_value);
+                        $field_value = sdg_sanitize($field_value);
                     }
                     
                     //$field_info .= "field_name: $field_name<br />";                    

@@ -3,7 +3,7 @@ jQuery(document).ready( function($){
 	// see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 	
 	const itemSeeMore = document.querySelectorAll(
-	  "p.event-excerpt> span.see-more-text"
+	  "p.event-excerpt > span.see-more-text"
 	);
 	
 	if (itemSeeMore) {

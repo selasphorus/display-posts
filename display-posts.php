@@ -556,23 +556,29 @@ function dp_get_excerpt( $args = array() ) {
 // WIP -- not fully functional yet -- issues w/ JS
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 function expandable_excerpt($excerpt) {
-	$split = explode(" ", $excerpt); //convert string to array
-	$len = count($split); //get number of words
-	$words_to_show_first = 19; // Word to be dsiplayed first
-	if ($len > $words_to_show_first) { //check if it's longer the than first part
 
-		$firsthalf = array_slice($split, 0, $words_to_show_first);
-		$secondhalf = array_slice($split, $words_to_show_first, $len - 1);
-		$output = '<p class="event-excerpt" >';
-		$output .= implode(' ', $firsthalf) . '<span class="see-more-text">...see more</span>';
+	$split = explode(" ", $excerpt); // convert string to array
+	$len = count($split); // get number of in excerpt
+	$num_words_preview = 55; // Number of words to be displayed in closed state
+	
+	if ($len > $num_words_preview) { //check if it's longer the than first part
+
+		$firsthalf = array_slice($split, 0, $num_words_preview);
+		$secondhalf = array_slice($split, $num_words_preview, $len - 1);
+		
+		$output = '<p class="expandable-excerpt" >';
+		$output .= implode(' ', $firsthalf) . '<span class="more-text">...see more</span>';
 
 		$output .= '<span class="excerpt-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
 		$output .= '</span>';
+		$output .= '<span class="less-text">[less]</span>';
 		$output .= '</p>';
+		
 	} else {
-		$output = '<p class="event-excerpt">'  .   $excerpt . '</p>';
+		$output = '<p class="expandable-excerpt">'  .   $excerpt . '</p>';
 	}
+	
 	return $output;
 }
 

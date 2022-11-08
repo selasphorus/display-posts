@@ -458,7 +458,7 @@ function dp_get_excerpt( $args = array() ) {
 
 	$info = ""; // init
 	
-	$info .= "args: <pre>".print_r($args, true)."</pre>";
+	//$info .= "args: <pre>".print_r($args, true)."</pre>";
 	
 	// Defaults
 	$defaults = array(
@@ -477,6 +477,8 @@ function dp_get_excerpt( $args = array() ) {
 
 	// Parse args
 	$args = wp_parse_args( $args, $defaults );
+	
+	$info .= "args: <pre>".print_r($args, true)."</pre>";
 
 	// Apply filters to args
 	//$args = apply_filters( 'dp_get_excerpt_args', $defaults );

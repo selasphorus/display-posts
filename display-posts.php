@@ -482,6 +482,7 @@ function dp_get_excerpt( $args = array() ) {
 
 	if ( $post_id ) {
 	
+		return ( "post_id: ".$post_id );
 		$post = get_post( $post_id );
 		
 	} else {

@@ -1,4 +1,6 @@
-// see https://developer.wordpress.org/reference/functions/get_the_excerpt/
+jQuery(document).ready( function($){
+
+	// see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 	
 	const itemSeeMore = document.querySelectorAll(
 		"p.event-excerpt > span.see-more-text"
@@ -11,10 +13,6 @@
 				item.nextElementSibling.classList.toggle("hide");
 			});
 	  	});
-	}
-
-jQuery(document).ready( function($){
-
-	
+	}	
 
 }

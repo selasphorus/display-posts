@@ -9,6 +9,7 @@ jQuery(document).ready( function($){
         //alert("click");
         $(this).toggleClass( "hide" );
 		$(this).next('span.excerpt-full').toggleClass( "hide" );
+		$(this).next('span.less-text').toggleClass( "hide" );
         
     });
     
@@ -17,6 +18,7 @@ jQuery(document).ready( function($){
         //alert("click");
         $(this).toggleClass( "hide" );
 		$(this).prev('span.excerpt-full').toggleClass( "hide" );
+		$(this).next('span.more-text').toggleClass( "hide" );
         
     });
 	

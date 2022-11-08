@@ -15,4 +15,4 @@ jQuery(document).ready( function($){
 	  	});
 	}	
 
-}
+)};

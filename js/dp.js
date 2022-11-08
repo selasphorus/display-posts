@@ -5,8 +5,10 @@ jQuery(document).ready( function($){
 	// Toggling
     $( "p.event-excerpt > span.see-more-text" ).click(function() {
         
-        alert("click");
-        
+        //alert("click");
+        $(this).classList.toggle("hide");
+		$(this).nextElementSibling.classList.toggle("hide");
+				
         /*
         var id = $(this).attr('id');
         var item_id = id.substr(14); // e.g. toggle_handle_35381

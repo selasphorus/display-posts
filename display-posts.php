@@ -471,7 +471,7 @@ function dp_get_excerpt( $args = array() ) {
 	);
 
 	// Apply filters
-	$defaults = apply_filters( 'dp_get_excerpt_defaults', $defaults );
+	//$defaults = apply_filters( 'dp_get_excerpt_defaults', $defaults );
 
 	// Parse args
 	$args = wp_parse_args( $args, $defaults );
@@ -479,7 +479,7 @@ function dp_get_excerpt( $args = array() ) {
 	$info .= "args: <pre>".print_r($args)."</pre>";
 
 	// Apply filters to args
-	$args = apply_filters( 'dp_get_excerpt_args', $defaults );
+	//$args = apply_filters( 'dp_get_excerpt_args', $defaults );
 
 	// Extract
 	extract( $args );
@@ -528,7 +528,7 @@ function dp_get_excerpt( $args = array() ) {
 			// Add readmore to excerpt if enabled
 			if ( $readmore ) {
 
-				$info .= apply_filters( 'dp_readmore_link', $readmore_link );
+				//$info .= apply_filters( 'dp_readmore_link', $readmore_link );
 
 			}
 
@@ -537,7 +537,8 @@ function dp_get_excerpt( $args = array() ) {
 	}
 
 	// Apply filters and echo
-	return apply_filters( 'dp_get_excerpt', $info );
+	//return apply_filters( 'dp_get_excerpt', $info );
+	return $info;
 
 }
 

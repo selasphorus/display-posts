@@ -389,9 +389,9 @@ function dp_allowedtags() {
     return '<style>,<br>,<em>,<strong>'; 
 }
 
-if ( ! function_exists( 'wpse_custom_wp_trim_excerpt' ) ) : 
+if ( ! function_exists( 'dp_custom_wp_trim_excerpt' ) ) : 
 
-    function wpse_custom_wp_trim_excerpt($excerpt) {
+    function dp_custom_wp_trim_excerpt($excerpt) {
         
         global $post;
         
@@ -402,7 +402,7 @@ if ( ! function_exists( 'wpse_custom_wp_trim_excerpt' ) ) :
             $excerpt = strip_shortcodes( $excerpt );
             $excerpt = apply_filters('the_content', $excerpt);
             $excerpt = str_replace(']]>', ']]&gt;', $excerpt);
-            $excerpt = strip_tags($excerpt, dp_allowedtags()); /*IF you need to allow just certain tags. Delete if all tags are allowed */
+            $excerpt = strip_tags($excerpt, dp_allowedtags()); // IF you need to allow just certain tags. Delete if all tags are allowed
 
             //Set the excerpt word count and only break after sentence is complete.
             $excerpt_word_count = 75;
@@ -440,20 +440,21 @@ if ( ! function_exists( 'wpse_custom_wp_trim_excerpt' ) ) :
             //$excerpt .= atc_excerpt_more( '' );
             //$excerpt .= "***";
         }
-        return apply_filters('wpse_custom_wp_trim_excerpt', $wpse_excerpt, $raw_excerpt);
+        return apply_filters('dp_custom_wp_trim_excerpt', $dp_excerpt, $raw_excerpt);
     }
 
 endif; 
 
 // Replace trim_excerpt function -- temp disabled for troubleshooting
 //remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-//add_filter('get_the_excerpt', 'wpse_custom_wp_trim_excerpt'); 
+//add_filter('get_the_excerpt', 'dp_custom_wp_trim_excerpt'); 
 
 /* Function to allow for multiple different excerpt lengths as needed
  * Call as follows:
  * Adapted from https://www.wpexplorer.com/custom-excerpt-lengths-wordpress/
  *
  */
+if ( is_dev_site() ) {
 function dp_get_excerpt( $args = array() ) {
 
 	$info = ""; // init
@@ -552,7 +553,6 @@ function dp_get_excerpt( $args = array() ) {
 
 }
 
-
 // WIP -- not fully functional yet -- issues w/ JS
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 function expandable_excerpt($excerpt) {
@@ -580,6 +580,8 @@ function expandable_excerpt($excerpt) {
 	}
 	
 	return $output;
+}
+
 }
 
 /**
@@ -1528,7 +1530,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
     if ( $a['fields'] ) {
         
         // Turn the fields list into an array
-        $arr_fields = sdg_att_explode( $a['fields'] );
+        $arr_fields = birdhive_att_explode( $a['fields'] ); //if ( function_exists('sdg_att_explode') ) { }
         //$info .= print_r($arr_fields, true); // tft
         
         // e.g. http://stthomas.choirplanner.com/library/search.php?workQuery=Easter&composerQuery=Williams
@@ -1764,7 +1766,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                     $field_info .= "field_type: $field_type<br />"; // tft
                     
                     if ( !empty($field_value) ) {
-                        $field_value = sdg_sanitize($field_value);
+                        if ( function_exists('sdg_sanitize')) { $field_value = sdg_sanitize($field_value); }
                     }
                     
                     //$field_info .= "field_name: $field_name<br />";                    

@@ -7,6 +7,7 @@
 	if (itemSeeMore) {
 		itemSeeMore.forEach((item) => {
 			item.addEventListener("click", () => {
+				alert("click");
 				item.classList.toggle("hide");
 				item.nextElementSibling.classList.toggle("hide");
 			});

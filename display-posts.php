@@ -571,7 +571,7 @@ function expandable_excerpt($excerpt) {
 
 		$output .= '<span class="excerpt-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
-		$output .= '<span class="less-text hide">[less]</span>';
+		$output .= '<span class="less-text">[less]</span>';
 		$output .= '</span>';
 		$output .= '</p>';
 		

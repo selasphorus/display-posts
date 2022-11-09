@@ -7,17 +7,16 @@ jQuery(document).ready( function($){
     $( "span.more-text" ).click(function() {
     
     	$(this).toggleClass( "hide" );
-    	//$(this).next('span.excerpt-full').toggleClass( "hide" );
     	$(this).siblings().toggleClass( "hide" );
-    	//$(this).next('span.less-text').toggleClass( "hide" );
     });
     
     $( "span.less-text" ).click(function() {
         
         //alert("click");
         $(this).toggleClass( "hide" );
-		$(this).prev('span.excerpt-full').toggleClass( "hide" );
-		$(this).next('span.more-text').toggleClass( "hide" );
+    	$(this).siblings().toggleClass( "hide" );
+		//$(this).prev('span.excerpt-full').toggleClass( "hide" );
+		//$(this).next('span.more-text').toggleClass( "hide" );
         
     });
 	

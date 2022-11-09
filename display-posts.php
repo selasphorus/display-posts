@@ -453,7 +453,8 @@ endif;
  * Adapted from https://www.wpexplorer.com/custom-excerpt-lengths-wordpress/
  *
  */
-if ( function_exists('is_dev_site') && is_dev_site() ) {
+
+//if ( function_exists('is_dev_site') && is_dev_site() ) {
 function dp_get_excerpt( $args = array() ) {
 
 	$info = ""; // init
@@ -581,7 +582,7 @@ function expandable_excerpt($excerpt) {
 	return $output;
 }
 
-}
+//}
 
 /**
  * Prints HTML with meta information for the categories, tags.

@@ -457,6 +457,8 @@ endif;
 //if ( function_exists('is_dev_site') && is_dev_site() ) {
 function dp_get_excerpt( $args = array() ) {
 
+	//dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length ) );
+	
 	$info = ""; // init
 	
 	//$info .= "args: <pre>".print_r($args, true)."</pre>";
@@ -511,8 +513,8 @@ function dp_get_excerpt( $args = array() ) {
 	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
 		
 		if ( $expandable ) {
-			$info .= expandable_excerpt( $post->post_excerpt );
-			//$info .= expandable_excerpt(get_the_excerpt( $post_id ) );
+			$info .= expandable_text( $post->post_excerpt );
+			//$info .= expandable_text(get_the_excerpt( $post_id ) );
 		} else {
 			$info .= $post->post_excerpt;
 		}		
@@ -553,12 +555,25 @@ function dp_get_excerpt( $args = array() ) {
 
 }
 
-// WIP -- not fully functional yet -- issues w/ JS
+// WIP
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
-function expandable_excerpt($excerpt) {
-
-	$split = explode(" ", $excerpt); // convert string to array
-	$len = count($split); // get number of in excerpt
+function expandable_text( $text = null, $post_id = null, $text_length = "excerpt" ) { //function expandable_excerpt($excerpt) // $args = array() 
+	
+	if ( empty($text) ) {
+		if ( empty($post_id) ) { 
+			return false;
+		} else {
+			$post = get_post( $post_id );
+			//if ( has_excerpt( $post_id ) ) {}
+			//get_the_content
+			//get_the_excerpt
+			$excerpt = $post->post_excerpt;
+			$content = $post->post_content;
+		}
+	}
+	
+	$split = explode(" ", $text); // convert string to array
+	$len = count($split); // get number of in text
 	$num_words_preview = 20; // Number of words to be displayed in closed state
 	
 	if ($len > $num_words_preview) { //check if it's longer the than first part
@@ -566,17 +581,17 @@ function expandable_excerpt($excerpt) {
 		$firsthalf = array_slice($split, 0, $num_words_preview);
 		$secondhalf = array_slice($split, $num_words_preview, $len - 1);
 		
-		$output = '<p class="expandable-excerpt" >';
+		$output = '<p class="expandable-text" >';
 		$output .= implode(' ', $firsthalf) . '<span class="more-text readmore">&nbsp;more</span>';
 
-		$output .= '<span class="excerpt-full hide">';
+		$output .= '<span class="text-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
 		$output .= '</span>';
 		$output .= '<span class="less-text readmore hide">&nbsp;less</span>';
 		$output .= '</p>';
 		
 	} else {
-		$output = '<p class="expandable-excerpt">'  .   $excerpt . '</p>';
+		$output = '<p class="expandable-text">'  .   $excerpt . '</p>';
 	}
 	
 	return $output;
@@ -1061,6 +1076,7 @@ function birdhive_display_posts ( $atts = [] ) {
         'class' => null, // for additional styling
         'show_images' => false,
         'expandable' => false, // for excerpts
+        'text_length' => 'excerpt', // excerpt or full length
         
         // For post_type 'event'
         'scope' => 'upcoming',
@@ -1081,6 +1097,7 @@ function birdhive_display_posts ( $atts = [] ) {
     $class = $a['class'];
     $show_images = $a['show_images'];
     $expandable = $a['expandable'];
+    $text_length = $a['text_length'];
     
     // For grid format:
     $num_cols = $a['cols'];
@@ -1337,7 +1354,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( function_exists('is_dev_site') && is_dev_site() ) {
-                		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable) );
+                		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length ) );
                 		//$info .= $post->post_excerpt;
                 	} else {
                 		$info .= get_the_excerpt( $post_id );

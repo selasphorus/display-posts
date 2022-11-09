@@ -567,12 +567,12 @@ function expandable_excerpt($excerpt) {
 		$secondhalf = array_slice($split, $num_words_preview, $len - 1);
 		
 		$output = '<p class="expandable-excerpt" >';
-		$output .= implode(' ', $firsthalf) . '<span class="more-text">... Read more</span>';
+		$output .= implode(' ', $firsthalf) . '&nbsp;<span class="more-text readmore">more</span>';
 
 		$output .= '<span class="excerpt-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
 		$output .= '</span>';
-		$output .= '<span class="less-text hide">[less]</span>';
+		$output .= '&nbsp;<span class="less-text readmore hide">less</span>';
 		$output .= '</p>';
 		
 	} else {

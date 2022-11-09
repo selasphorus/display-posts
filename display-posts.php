@@ -454,7 +454,7 @@ endif;
  * Adapted from https://www.wpexplorer.com/custom-excerpt-lengths-wordpress/
  *
  */
-if ( is_dev_site() ) {
+if ( function_exists('is_dev_site') && is_dev_site() ) {
 function dp_get_excerpt( $args = array() ) {
 
 	$info = ""; // init
@@ -1336,7 +1336,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 }
                 if ( $return_format == "excerpts" ) {
                 	
-                	if ( is_dev_site() ) {
+                	if ( function_exists('is_dev_site') && is_dev_site() ) {
                 		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable) );
                 		//$info .= $post->post_excerpt;
                 	} else {

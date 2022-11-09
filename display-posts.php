@@ -138,7 +138,7 @@ function digit_to_word($number){
 
 // Hide everything within and including the square brackets
 // e.g. for titles matching the pattern "{Whatever} [xxx]" or "[xxx] {Whatever}"
-if ( !function_exists( 'remove_bracketed_info' ) ) {
+/*if ( !function_exists( 'remove_bracketed_info' ) ) {
     function remove_bracketed_info ( $str ) {
 
         if (strpos($str, '[') !== false) { 
@@ -148,8 +148,7 @@ if ( !function_exists( 'remove_bracketed_info' ) ) {
 
         return $str;
     }
-}
-
+}*/
 
 /*** IMAGE FUNCTIONS ***/
 

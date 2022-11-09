@@ -8,8 +8,8 @@ jQuery(document).ready( function($){
     
     	$(this).toggleClass( "hide" );
     	$(this).next('span.excerpt-full').toggleClass( "hide" );
-    	$(this).next('span.excerpt-full').children.toggleClass( "hide" );
-    	//$(this).next('span.less-text').toggleClass( "hide" );
+    	//$(this).next('span.excerpt-full').children.toggleClass( "hide" );
+    	$(this).next('span.less-text').toggleClass( "hide" );
         //children
     });
     

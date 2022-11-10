@@ -466,7 +466,7 @@ function dp_get_excerpt( $args = array() ) {
 	$defaults = array(
 		'post'            => '',
 		'post_id'         => null,
-		'length'          => 55, // num words
+		'preview_length'  => 55, // num words to display as preview text
 		'readmore'        => false,
 		'readmore_text'   => esc_html__( 'Read more...', 'dp' ),
 		'readmore_after'  => '',
@@ -516,7 +516,7 @@ function dp_get_excerpt( $args = array() ) {
 		$text = apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
 	} else {	
 		// No "more" tag defined, so generate excerpt using wp_trim_words
-		$text = wp_trim_words( strip_shortcodes( $post->post_content ), $length );
+		$text = wp_trim_words( strip_shortcodes( $post->post_content ), $preview_length );
 	}
 	
 	if ( $expandable ) {
@@ -1058,6 +1058,7 @@ function birdhive_display_posts ( $atts = [] ) {
         'show_images' => false,
         'expandable' => false, // for excerpts
         'text_length' => 'excerpt', // excerpt or full length
+        'preview_length' => '55',
         
         // For post_type 'event'
         'scope' => 'upcoming',
@@ -1335,7 +1336,7 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( function_exists('is_dev_site') && is_dev_site() ) {
-                		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length ) );
+                		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
                 		//$info .= $post->post_excerpt;
                 	} else {
                 		$info .= get_the_excerpt( $post_id );

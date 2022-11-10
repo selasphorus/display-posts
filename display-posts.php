@@ -591,7 +591,7 @@ function expandable_text( $post_id = null, $text_length = "excerpt", $preview_le
 	
 	// TODO fix the following in terms of handling html tags within the text
 	//$stripped_text = wp_strip_all_tags($text);
-	$split = explode(" ", $preview_text); // convert string to array
+	$split = explode(" ", wp_strip_all_tags($preview_text)); // convert string to array
 	$len = count($split); // get number of words in text
 	
 	//$output .= "<pre>".print_r($split, true)."</pre>";

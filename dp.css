@@ -124,6 +124,15 @@
 
 /*** Excerpts ***/
 
+.hide {
+	display: none;
+}
+
+.more-text,
+.less-text {
+	font-style: italic;
+}
+
 .text-full.hide {
 	display: none;
 }

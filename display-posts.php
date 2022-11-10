@@ -456,10 +456,9 @@ endif;
 
 //if ( function_exists('is_dev_site') && is_dev_site() ) {
 function dp_get_excerpt( $args = array() ) {
-
-	//dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length ) );
 	
 	$info = ""; // init
+	$text = "";
 	
 	//$info .= "args: <pre>".print_r($args, true)."</pre>";
 	
@@ -474,6 +473,7 @@ function dp_get_excerpt( $args = array() ) {
 		'custom_excerpts' => true,
 		'disable_more'    => false,
 		'expandable'    => false,
+		'text_length'    => 'excerpt',
 	);
 
 	// Apply filters
@@ -490,63 +490,44 @@ function dp_get_excerpt( $args = array() ) {
 	// Extract
 	extract( $args );
 
-	if ( $post_id ) {
-	
-		$post = get_post( $post_id );
-		
-	} else {
-	
+	if ( $post_id ) {	
+		$post = get_post( $post_id );		
+	} else {	
 		// Get global post data
 		if ( ! $post ) {
 			global $post;
 		}
-
 		// Get post ID
-		$post_id = $post->ID;
-		
+		$post_id = $post->ID;		
 	}
 	
 	// Set up the "Read more" link
 	$readmore_link = '&nbsp;<a href="' . get_permalink( $post_id ) . '" class="readmore"><em>' . $readmore_text . $readmore_after . '</em></a>'; // todo -- get rid of em, use css
 	 
-	// Check for custom excerpt
-	if ( $custom_excerpts && has_excerpt( $post_id ) ) {
-		
-		if ( $expandable ) {
-			$info .= expandable_text( $post->post_excerpt );
-			//$info .= expandable_text(get_the_excerpt( $post_id ) );
-		} else {
-			$info .= $post->post_excerpt;
-		}		
-		
-		// Add readmore to excerpt if enabled
-		if ( $readmore ) {
-			$info .= apply_filters( 'dp_readmore_link', $readmore_link );
-		}
-		
-	} else {
-		
-		// No custom excerpt...so let's generate one
-		
+	// Get the text, based on args
+	if ( $text_length == "full" ) {
+		// Full post content
+		$text = $post->post_content;
+	} else if ( $custom_excerpts && has_excerpt( $post_id ) ) {
+		// Check for custom excerpt
+		$text = $post->post_excerpt;
+	} else if ( ! $disable_more && strpos( $post->post_content, '<!--more-->' ) ) {
 		// Check for "more" tag and return content, if it exists
-		if ( ! $disable_more && strpos( $post->post_content, '<!--more-->' ) ) {
-			
-			$info .= apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
-			
-		} else {
-		
-			// No "more" tag defined, so generate excerpt using wp_trim_words
-			
-			// Generate excerpt
-			$info .= wp_trim_words( strip_shortcodes( $post->post_content ), $length );
-
-			// Add readmore to excerpt if enabled
-			if ( $readmore ) {
-				$info .= apply_filters( 'dp_readmore_link', $readmore_link );
-			}
-
-		}
-
+		$text = apply_filters( 'the_content', get_the_content( $readmore_text . $readmore_after ) );
+	} else {	
+		// No "more" tag defined, so generate excerpt using wp_trim_words
+		$text = wp_trim_words( strip_shortcodes( $post->post_content ), $length );
+	}
+	
+	if ( $expandable ) {
+		$info .= expandable_text( $text );
+	} else {
+		$info .= $text;
+	}		
+	
+	// Add readmore to excerpt if enabled
+	if ( $readmore ) {
+		$info .= apply_filters( 'dp_readmore_link', $readmore_link );
 	}
 
 	// Apply filters and echo

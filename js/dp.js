@@ -14,7 +14,7 @@ jQuery(document).ready( function($){
         
         //alert("click");
         $(this).toggleClass( "hide" );
-    	$(this).siblings().toggleClass( "hide" );
+    	$(this).siblings('span.extxt').toggleClass( "hide" );
 		//$(this).prev('span.excerpt-full').toggleClass( "hide" );
 		//$(this).next('span.more-text').toggleClass( "hide" );
         

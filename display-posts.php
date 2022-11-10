@@ -597,16 +597,16 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 		$firsthalf = array_slice($split, 0, $preview_length);
 		$secondhalf = array_slice($split, $preview_length, $len - 1);
 		
-		$output = '<p class="expandable-text" >';
-		$output .= implode(' ', $firsthalf) . '<span class="spacer">&nbsp;</span><span class="more-text readmore">more</span>';
+		$output = '<p class="extxt expandable-text" >';
+		$output .= implode(' ', $firsthalf) . '<span class="extxt spacer">&nbsp;</span><span class="extxt more-text readmore">more</span>';
 		$output .= '<span class="text-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
 		$output .= '</span>';
-		$output .= '<span class="spacer hide">&nbsp;</span><span class="less-text readmore hide">less</span>';
+		$output .= '<span class="extxt spacer hide">&nbsp;</span><span class="extxt less-text readmore hide">less</span>';
 		$output .= '</p>';
 		
 	} else {
-		$output = '<p class="expandable-text">'.$text.'</p>';
+		$output = '<p class="extxt expandable-text">'.$text.'</p>';
 	}
 	
 	return $output;

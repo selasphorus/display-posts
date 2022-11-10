@@ -579,30 +579,28 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 			return false;
 		} else {
 			$post = get_post( $post_id );
-			if ( $text_length == 'excerpt' ) {
-				if ( has_excerpt( $post_id ) ) { 
-					$text = $post->post_excerpt; // ??
-				} else {
-					$text = get_the_excerpt($post_id);
-				}				
+			if ( has_excerpt( $post_id ) ) { 
+				$preview_text = $post->post_excerpt; // ??
 			} else {
-				$text = $post->post_content;
+				$preview_text = get_the_excerpt($post_id);
 			}
+			$full_text = $post->post_content;
 		}
 	}
 	
 	// TODO fix the following in terms of handling html tags within the text
-	$split = explode(" ", $text); // convert string to array
+	//$stripped_text = wp_strip_all_tags($text);
+	$split = explode(" ", $preview_text); // convert string to array
 	$len = count($split); // get number of words in text
 	
-	$output .= "<pre>".print_r($split, true)."</pre>";
+	//$output .= "<pre>".print_r($split, true)."</pre>";
 	
-	if ( $len > $preview_length ) { // Is the full text longer than the preview length?
+	if ( $len > $preview_length ) { // Is the excerpt-as-preview_text longer than the set preview length?
 
 		$firsthalf = array_slice($split, 0, $preview_length);
 		$secondhalf = array_slice($split, $preview_length, $len - 1);
 		
-		$output .= '<p class="extxt expandable-text" >';
+		$output .= '<p class="expandable-text" >';
 		$output .= implode(' ', $firsthalf) . '<span class="extxt spacer">&nbsp;</span><span class="extxt more-text readmore">more</span>';
 		$output .= '<span class="extxt text-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
@@ -611,7 +609,19 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 		$output .= '</p>';
 		
 	} else {
-		$output = '<p class="extxt expandable-text">'.$text.'</p>';
+	
+		//$output = '<p class="extxt expandable-text">'.$text.'</p>';
+		$output .= '<p class="expandable-text" >';
+		$output .= '<span class="extxt text-preview" >';
+		$output .= $preview_text;
+		$output .= '</span>';
+		$output .= '<span class="extxt spacer">&nbsp;</span><span class="extxt more-text readmore">more</span>';
+		$output .= '<span class="extxt text-full hide">';
+		$output .= $full_text;
+		$output .= '</span>';
+		$output .= '<span class="extxt spacer hide">&nbsp;</span><span class="extxt less-text readmore hide">less</span>';
+		$output .= '</p>';
+	
 	}
 	
 	return $output;

@@ -520,7 +520,7 @@ function dp_get_excerpt( $args = array() ) {
 	}
 	
 	if ( $expandable ) {
-		$info .= expandable_text( $text );
+		$info .= expandable_text( $text, $post_id, $text_length, $preview_length );
 	} else {
 		$info .= $text;
 	}		
@@ -538,33 +538,36 @@ function dp_get_excerpt( $args = array() ) {
 
 // WIP
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
-function expandable_text( $text = null, $post_id = null, $text_length = "excerpt" ) { //function expandable_excerpt($excerpt) // $args = array() 
+// TODO: pare down number of args -- simplify
+function expandable_text( $text = null, $post_id = null, $text_length = "excerpt", $preview_length = 55 ) { //function expandable_excerpt($excerpt) // $args = array() 
 	
 	if ( empty($text) ) {
 		if ( empty($post_id) ) { 
 			return false;
 		} else {
 			$post = get_post( $post_id );
-			//if ( has_excerpt( $post_id ) ) {}
-			//get_the_content
-			//get_the_excerpt
-			$excerpt = $post->post_excerpt;
-			$content = $post->post_content;
+			if ( $text_length == 'excerpt' ) {
+				if ( has_excerpt( $post_id ) ) { 
+					$text = $post->post_excerpt; // ??
+				} else {
+					$text = get_the_excerpt($post_id);
+				}				
+			} else {
+				$text = $post->post_content;
+			}
 		}
 	}
 	
 	$split = explode(" ", $text); // convert string to array
 	$len = count($split); // get number of in text
-	$num_words_preview = 20; // Number of words to be displayed in closed state
 	
-	if ($len > $num_words_preview) { //check if it's longer the than first part
+	if ($len > $preview_length) { //check if it's longer the than first part
 
-		$firsthalf = array_slice($split, 0, $num_words_preview);
-		$secondhalf = array_slice($split, $num_words_preview, $len - 1);
+		$firsthalf = array_slice($split, 0, $preview_length);
+		$secondhalf = array_slice($split, $preview_length, $len - 1);
 		
 		$output = '<p class="expandable-text" >';
 		$output .= implode(' ', $firsthalf) . '<span class="spacer">&nbsp;</span><span class="more-text readmore">more</span>';
-
 		$output .= '<span class="text-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
 		$output .= '</span>';
@@ -572,7 +575,7 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 		$output .= '</p>';
 		
 	} else {
-		$output = '<p class="expandable-text">'  .   $excerpt . '</p>';
+		$output = '<p class="expandable-text">'.$text.'</p>';
 	}
 	
 	return $output;

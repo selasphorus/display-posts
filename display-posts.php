@@ -120,7 +120,7 @@ function birdhive_att_explode( $string = '' ) {
 	return explode( ',', $string );
 }
 
-function digit_to_word($number){
+function digit_to_word( $number ){
     switch($number){
         case 0:$word = "zero";break;
         case 1:$word = "one";break;
@@ -206,6 +206,21 @@ function get_first_image_from_post_content( $post_id ) {
 function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_custom_thumb = false, $echo = true ) {
     
     $info = ""; // init
+    
+    /*
+    // Defaults
+	$defaults = array(
+		'post_id'         => null,
+		'preview_length'  => 55,
+		'readmore'        => false,
+	);
+	
+    // Parse args
+	$args = wp_parse_args( $args, $defaults );
+
+	// Extract
+	extract( $args );
+	*/
     
     if ( $post_id === null ) {
         $post_id = get_the_ID();
@@ -539,7 +554,23 @@ function dp_get_excerpt( $args = array() ) {
 // WIP
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 // TODO: pare down number of args -- simplify
+//function expandable_text( $args = array() ) {
 function expandable_text( $text = null, $post_id = null, $text_length = "excerpt", $preview_length = 55 ) { //function expandable_excerpt($excerpt) // $args = array() 
+	
+	/*
+    // Defaults
+	$defaults = array(
+		'post_id'         => null,
+		'preview_length'  => 55,
+		'readmore'        => false,
+	);
+	
+    // Parse args
+	$args = wp_parse_args( $args, $defaults );
+
+	// Extract
+	extract( $args );
+	*/
 	
 	if ( empty($text) ) {
 		if ( empty($post_id) ) { 
@@ -683,8 +714,24 @@ function birdhive_get_default_category () {
 /*** RETRIEVE & DISPLAY POSTS with complex queries &c. ***/
 
 function birdhive_get_posts ( $a = array() ) {
+//function birdhive_get_posts ( $args = array() ) {
     
     global $wpdb;
+    
+    /*
+    // Defaults
+	$defaults = array(
+		'post_id'         => null,
+		'preview_length'  => 55,
+		'readmore'        => false,
+	);
+	
+    // Parse args
+	$args = wp_parse_args( $args, $defaults );
+
+	// Extract
+	extract( $args );
+	*/
     
     // Init vars
     $arr_posts_info = array();
@@ -1028,10 +1075,25 @@ function birdhive_get_posts ( $a = array() ) {
 // This shortcode is in use on numerous Pages, as well as via the archive.php page template
 add_shortcode('display_posts', 'birdhive_display_posts');
 function birdhive_display_posts ( $atts = [] ) {
-
+//function birdhive_display_posts ( $args = array() ) {
     global $wpdb;
 	$info = "";
 	$troubleshooting = "";
+	
+	/*
+    // Defaults
+	$defaults = array(
+		'post_id'         => null,
+		'preview_length'  => 55,
+		'readmore'        => false,
+	);
+	
+    // Parse args
+	$args = wp_parse_args( $args, $defaults );
+
+	// Extract
+	extract( $args );
+	*/
 
 	$a = shortcode_atts( array(
         
@@ -1083,6 +1145,7 @@ function birdhive_display_posts ( $atts = [] ) {
     $show_images = $a['show_images'];
     $expandable = $a['expandable'];
     $text_length = $a['text_length'];
+    $preview_length = $a['preview_length'];
     
     // For grid format:
     $num_cols = $a['cols'];
@@ -1461,6 +1524,21 @@ function match_group_field ( $field_groups, $field_name ) {
 // https://www.advancedcustomfields.com/resources/creating-wp-archive-custom-field-filter/
 add_shortcode('birdhive_search_form', 'birdhive_search_form');
 function birdhive_search_form ($atts = [], $content = null, $tag = '') {
+//function birdhive_search_form ( $args = array() ) {
+	/*
+    // Defaults
+	$defaults = array(
+		'post_id'         => null,
+		'preview_length'  => 55,
+		'readmore'        => false,
+	);
+	
+    // Parse args
+	$args = wp_parse_args( $args, $defaults );
+
+	// Extract
+	extract( $args );
+	*/
 	
 	$info = "";
     $troubleshooting = "";

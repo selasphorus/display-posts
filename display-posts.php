@@ -609,7 +609,7 @@ function expandable_text( $post_id = null, $text_length = "excerpt", $preview_le
 		$output .= '<span class="extxt spacer hide">&nbsp;</span><span class="extxt less-text readmore hide">less</span>';
 		$output .= '</p>';
 		
-	} else if ( $preview_text != $full_text ) {
+	} else if ( strlen($preview_text) != strlen($full_text) ) {
 	
 		//$output = '<p class="extxt expandable-text">'.$text.'</p>';
 		$output .= '<p class="expandable-text" >';
@@ -623,7 +623,7 @@ function expandable_text( $post_id = null, $text_length = "excerpt", $preview_le
 		$output .= '<span class="extxt spacer hide">&nbsp;</span><span class="extxt less-text readmore hide">less</span>';
 		$output .= '</p>';
 	
-	} else {
+	} else if ( strlen($full_text) > 0 ) {
 	
 		$output = '<p class="extxt">'.$full_text.'</p>';
 		

@@ -555,7 +555,8 @@ function dp_get_excerpt( $args = array() ) {
 // see https://developer.wordpress.org/reference/functions/get_the_excerpt/
 // TODO: pare down number of args -- simplify
 //function expandable_text( $args = array() ) {
-function expandable_text( $text = null, $post_id = null, $text_length = "excerpt", $preview_length = 55 ) { //function expandable_excerpt($excerpt) // $args = array() 
+function expandable_text( $post_id = null, $text_length = "excerpt", $preview_length = 55 ) {
+//function expandable_text( $text = null, $post_id = null, $text_length = "excerpt", $preview_length = 55 ) { //function expandable_excerpt($excerpt) // $args = array() 
 	
 	/*
     // Defaults
@@ -574,7 +575,7 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 	
 	$output = "";
 	
-	if ( empty($text) ) {
+	//if ( empty($text) ) {
 		if ( empty($post_id) ) { 
 			return false;
 		} else {
@@ -586,7 +587,7 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 			}
 			$full_text = $post->post_content;
 		}
-	}
+	//}
 	
 	// TODO fix the following in terms of handling html tags within the text
 	//$stripped_text = wp_strip_all_tags($text);
@@ -1417,7 +1418,8 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( function_exists('is_dev_site') && is_dev_site() ) {
-                		$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
+                		$info .= expandable_text( array('post_id' => $post_id, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
+                		//$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
                 		//$info .= $post->post_excerpt;
                 	} else {
                 		$info .= get_the_excerpt( $post_id );

@@ -591,13 +591,15 @@ function expandable_text( $post_id = null, $text_length = "excerpt", $preview_le
 	
 	// TODO fix the following in terms of handling html tags within the text
 	//$stripped_text = wp_strip_all_tags($text);
-	$split = explode(" ", wp_strip_all_tags($preview_text)); // convert string to array
+	$split = explode(" ", $preview_text); // convert string to array
 	$len = count($split); // get number of words in text
 	
 	//$output .= "<pre>".print_r($split, true)."</pre>";
 	
 	if ( $len > $preview_length ) { // Is the excerpt-as-preview_text longer than the set preview length?
 
+		$output .= "<!-- extxt len > preview_length -->";
+		
 		$firsthalf = array_slice($split, 0, $preview_length);
 		$secondhalf = array_slice($split, $preview_length, $len - 1);
 		

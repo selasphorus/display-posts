@@ -7,7 +7,7 @@ jQuery(document).ready( function($){
     $( "span.more-text" ).click(function() {
     
     	$(this).toggleClass( "hide" );
-    	$(this).siblings().toggleClass( "hide" );
+    	$(this).siblings('span.extxt').toggleClass( "hide" );
     });
     
     $( "span.less-text" ).click(function() {

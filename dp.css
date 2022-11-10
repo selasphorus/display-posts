@@ -132,8 +132,9 @@
 .less-text {
 	font-style: italic;
 	font-weight: 600;
-    color: #6e1e27;
+    color: #860313;
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .text-full.hide {

@@ -613,6 +613,8 @@ function expandable_text( $post_id = null, $text_length = "excerpt", $preview_le
 		
 	} else if ( strlen(wp_strip_all_tags($preview_text)) != strlen(wp_strip_all_tags($full_text)) ) {
 	
+		$output .= "<!-- extxt preview_text not same as full_text -->";
+		
 		//$output = '<p class="extxt expandable-text">'.$text.'</p>';
 		$output .= '<p class="expandable-text" >';
 		$output .= '<span class="extxt text-preview" >';

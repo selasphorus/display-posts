@@ -1418,7 +1418,8 @@ function birdhive_display_posts ( $atts = [] ) {
                 if ( $return_format == "excerpts" ) {
                 	
                 	if ( function_exists('is_dev_site') && is_dev_site() ) {
-                		$info .= expandable_text( array('post_id' => $post_id, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
+                		$info .= expandable_text( $post_id, $text_length, $preview_length );
+                		//$info .= expandable_text( array('post_id' => $post_id, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
                 		//$info .= dp_get_excerpt( array('post_id' => $post_id, 'expandable' => $expandable, 'text_length' => $text_length, 'preview_length' => $preview_length ) );
                 		//$info .= $post->post_excerpt;
                 	} else {

@@ -572,6 +572,8 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 	extract( $args );
 	*/
 	
+	$output = "";
+	
 	if ( empty($text) ) {
 		if ( empty($post_id) ) { 
 			return false;
@@ -589,17 +591,20 @@ function expandable_text( $text = null, $post_id = null, $text_length = "excerpt
 		}
 	}
 	
+	// TODO fix the following in terms of handling html tags within the text
 	$split = explode(" ", $text); // convert string to array
-	$len = count($split); // get number of in text
+	$len = count($split); // get number of words in text
 	
-	if ($len > $preview_length) { //check if it's longer the than first part
+	$output .= "<pre>".print_r($split, true)."</pre>";
+	
+	if ( $len > $preview_length ) { // Is the full text longer than the preview length?
 
 		$firsthalf = array_slice($split, 0, $preview_length);
 		$secondhalf = array_slice($split, $preview_length, $len - 1);
 		
-		$output = '<p class="extxt expandable-text" >';
+		$output .= '<p class="extxt expandable-text" >';
 		$output .= implode(' ', $firsthalf) . '<span class="extxt spacer">&nbsp;</span><span class="extxt more-text readmore">more</span>';
-		$output .= '<span class="text-full hide">';
+		$output .= '<span class="extxt text-full hide">';
 		$output .= ' ' . implode(' ', $secondhalf);
 		$output .= '</span>';
 		$output .= '<span class="extxt spacer hide">&nbsp;</span><span class="extxt less-text readmore hide">less</span>';

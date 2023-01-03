@@ -1214,8 +1214,8 @@ function birdhive_display_posts ( $atts = [] ) {
         // Posts by ID -- translate to fit EM search attributes (https://wp-events-plugin.com/documentation/event-search-attributes/)
 		if ( isset($a['ids']) && !empty($a['ids']) ) {
 			$troubleshooting .= "Getting posts by IDs: ".$a['ids']."<br />";
-			$em_args['event'] = $a['ids'];
-			//$a['post_id'] = $a['ids'];
+			//$em_args['event'] = $a['ids'];
+			$em_args['post_id'] = $a['ids'];
 		}
         if ( $em_args ) { $troubleshooting .= 'shortcode_atts as passed to EM_Events::get <pre>'.print_r($em_args, true).'</pre>'; } // tft
         

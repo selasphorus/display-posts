@@ -1198,14 +1198,28 @@ function birdhive_display_posts ( $atts = [] ) {
     	// TODO: check to see if EM plugin is installed and active?
         // TODO: deal w/ taxonomy parameters -- how to translate these properly for EM?
         
+        // Unset args irrelevant to EM search attributes
+        //unset($a["meta_key"]); unset($a["meta_value"]); unset($a["name"]); unset($a["taxonomy"]); unset($a["tax_terms"]); unset($a["return_format"]); unset($a["cols"]); unset($a["return_format"]);
+        
+        // Create array of args relevant to EM search attributes
+        $em_args = array();
+        $em_args['limit'] = $a['limit'];
+        $em_args['order'] = $a['order'];
+        $em_args['orderby'] = $a['orderby'];
+        $em_args['category'] = $a['category'];
+        $em_args['scope'] = $a['scope'];
+        //$em_args['limit'] = $a['limit'];
+        //$em_args['limit'] = $a['limit'];
+        
         // Posts by ID -- translate to fit EM search attributes (https://wp-events-plugin.com/documentation/event-search-attributes/)
 		if ( isset($a['ids']) && !empty($a['ids']) ) {
 			$troubleshooting .= "Getting posts by IDs: ".$a['ids']."<br />";
-			$a['post_id'] = $a['ids'];
+			$em_args['event'] = $a['ids'];
+			//$a['post_id'] = $a['ids'];
 		}
-        if ( $a ) { $troubleshooting .= 'shortcode_atts as passed to EM_Events::get <pre>'.print_r($a, true).'</pre>'; } // tft
+        if ( $em_args ) { $troubleshooting .= 'shortcode_atts as passed to EM_Events::get <pre>'.print_r($em_args, true).'</pre>'; } // tft
         
-        $posts = EM_Events::get( $a ); // Retrieves an array of EM_Event Objects
+        $posts = EM_Events::get( $em_args ); // Retrieves an array of EM_Event Objects
         
         //$troubleshooting .= 'Posts retrieved using EM_Events::get: <pre>';
         

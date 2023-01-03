@@ -812,7 +812,7 @@ function birdhive_get_posts ( $a = array() ) {
     // NB: if IDs are specified, ignore most other args
     if ( isset($a['ids']) && !empty($a['ids']) ) {
         
-        $troubleshooting .= "Getting posts by IDs: ".$a['ids'];
+        $troubleshooting .= "Getting posts by IDs: ".$a['ids']."<br />";
         
         // Turn the list of IDs into a proper array
 		$posts_in         = array_map( 'intval', birdhive_att_explode( $a['ids'] ) );
@@ -1161,8 +1161,6 @@ function birdhive_display_posts ( $atts = [] ) {
         
     ), $atts );
     
-    if ( $a ) { $troubleshooting .= 'shortcode_atts: <pre>'.print_r($a, true).'</pre>'; } // tft
-    
     $post_type = $a['post_type'];
     $return_format = $a['return_format'];
     $class = $a['class'];
@@ -1202,12 +1200,14 @@ function birdhive_display_posts ( $atts = [] ) {
         
         // Posts by ID -- translate to fit EM search attributes (https://wp-events-plugin.com/documentation/event-search-attributes/)
 		if ( isset($a['ids']) && !empty($a['ids']) ) {
-			$troubleshooting .= "Getting posts by IDs: ".$a['ids'];
+			$troubleshooting .= "Getting posts by IDs: ".$a['ids']."<br />";
 			$a['post_id'] = $a['ids'];
 		}
+        if ( $a ) { $troubleshooting .= 'shortcode_atts as passed to EM_Events::get <pre>'.print_r($a, true).'</pre>'; } // tft
+        
         $posts = EM_Events::get( $a ); // Retrieves an array of EM_Event Objects
         
-        $troubleshooting .= 'Posts retrieved using EM_Events::get: <pre>';
+        //$troubleshooting .= 'Posts retrieved using EM_Events::get: <pre>';
         
         foreach ( $posts as $post ) {
             //$troubleshooting .= "post: ".print_r($post, true)."<br />";
@@ -1217,7 +1217,13 @@ function birdhive_display_posts ( $atts = [] ) {
         }
         //$troubleshooting .= 'last_query: '.print_r( $wpdb->last_query, true); // '<pre></pre>'
         $troubleshooting .= '</pre>'; // tft
+    
     } else {
+    	
+    	// NOT events
+    	
+    	if ( $a ) { $troubleshooting .= 'shortcode_atts as passed to birdhive_get_posts: <pre>'.print_r($a, true).'</pre>'; } // tft
+    	
         $posts_info = birdhive_get_posts( $a );
         $posts = $posts_info['arr_posts']->posts; // Retrieves an array of WP_Post Objects
         $info .= $posts_info['info'];

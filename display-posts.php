@@ -1196,8 +1196,15 @@ function birdhive_display_posts ( $atts = [] ) {
     
     // Retrieve an array of posts matching the args supplied    
     if ( post_type_exists('event') && $post_type == 'event' ) {
+    
     	// TODO: check to see if EM plugin is installed and active?
         // TODO: deal w/ taxonomy parameters -- how to translate these properly for EM?
+        
+        // Posts by ID -- translate to fit EM search attributes (https://wp-events-plugin.com/documentation/event-search-attributes/)
+		if ( isset($a['ids']) && !empty($a['ids']) ) {
+			$troubleshooting .= "Getting posts by IDs: ".$a['ids'];
+			$a['post_id'] = $a['ids'];
+		}
         $posts = EM_Events::get( $a ); // Retrieves an array of EM_Event Objects
         
         $troubleshooting .= 'Posts retrieved using EM_Events::get: <pre>';

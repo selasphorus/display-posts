@@ -166,6 +166,7 @@ function get_first_image_from_post_content( $post_id ) {
     //ob_start();
     //ob_end_clean();
     
+    // Find all the image tags in the post content
     $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
     //$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);
     //echo "Matches for post_id: $post_id => <pre>".print_r($matches, true)."</pre>"; // tft
@@ -231,9 +232,9 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         $imgsize = "full";
     }
     
-    $troubleshooting = "";
-    $troubleshooting .= "post_id: $post_id<br />";
-    $troubleshooting .= "imgsize: $imgsize<br />";
+    $ts_info = "";
+    $ts_info .= "post_id: $post_id<br />";
+    $ts_info .= "imgsize: $imgsize<br />";
     
     // Are we using the custom image, if any is set?
     if ( $use_custom_thumb == true ) {    
@@ -252,11 +253,11 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         if ( has_post_thumbnail( $post_id ) ) {
 
             $thumbnail_id = get_post_thumbnail_id( $post_id );
-            $troubleshooting .= "post has a featured image.<br />";
+            $ts_info .= "post has a featured image.<br />";
 
         } else {
 
-            $troubleshooting .= "post has NO featured image.<br />";
+            $ts_info .= "post has NO featured image.<br />";
 
             // If there's no featured image, see if there are any other images that we can use instead
             $image_info = get_first_image_from_post_content( $post_id );
@@ -318,7 +319,7 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
         
     }
 
-    $troubleshooting .= "Ok to display the image!<br />";
+    $ts_info .= "Ok to display the image!<br />";
     
     // Ok to display the image! Set up classes for styling
     $classes = "post-thumbnail dp";
@@ -362,14 +363,14 @@ function birdhive_post_thumbnail( $post_id = null, $imgsize = "thumbnail", $use_
             // display attachment via thumbnail_id
             $info .= wp_get_attachment_image( $thumbnail_id, $imgsize, false, array( "class" => "featured_attachment" ) );
             
-            $troubleshooting .= 'post_id: '.$post_id.'; thumbnail_id: '.$thumbnail_id;
-            if ( isset($images)) { $troubleshooting .= '<pre>'.print_r($images,true).'</pre>'; }
+            $ts_info .= 'post_id: '.$post_id.'; thumbnail_id: '.$thumbnail_id;
+            if ( isset($images)) { $ts_info .= '<pre>'.print_r($images,true).'</pre>'; }
         
             $info .= '</a>';
             
         } else {
             
-            $troubleshooting .= 'Use placeholder img';
+            $ts_info .= 'Use placeholder img';
             
             if ( function_exists( 'get_placeholder_img' ) ) { 
                 $img = get_placeholder_img();
@@ -760,12 +761,12 @@ function birdhive_get_posts ( $a = array() ) {
     // Init vars
     $arr_posts_info = array();
     $info = "";
-    $troubleshooting = "";
+    $ts_info = "";
     $get_by_ids = false;
     $get_by_slugs = false;
     $category_link = null;
     
-    $troubleshooting .= "args as passed to birdhive_get_posts: <pre>".print_r($a,true)."</pre>";
+    $ts_info .= "args as passed to birdhive_get_posts: <pre>".print_r($a,true)."</pre>";
     
     // Process the args as passed
     
@@ -812,7 +813,7 @@ function birdhive_get_posts ( $a = array() ) {
     // NB: if IDs are specified, ignore most other args
     if ( isset($a['ids']) && !empty($a['ids']) ) {
         
-        $troubleshooting .= "Getting posts by IDs: ".$a['ids']."<br />";
+        $ts_info .= "Getting posts by IDs: ".$a['ids']."<br />";
         
         // Turn the list of IDs into a proper array
 		$posts_in         = array_map( 'intval', birdhive_att_explode( $a['ids'] ) );
@@ -826,7 +827,7 @@ function birdhive_get_posts ( $a = array() ) {
     // NB: if slugs are specified, ignore most other args
     if ( isset($a['slugs']) && !empty($a['slugs']) ) {
         
-        $troubleshooting .= "Getting posts by slugs: ".$a['slugs'];
+        $ts_info .= "Getting posts by slugs: ".$a['slugs'];
         
         // Turn the list of slugs into a proper array
 		$posts_in = birdhive_att_explode( $a['slugs'] );
@@ -859,7 +860,7 @@ function birdhive_get_posts ( $a = array() ) {
 
         // If not empty tax_terms and empty taxonomy, determine default taxonomy from post type
         if ( empty($taxonomy) && !empty($tax_terms) ) {
-            $troubleshooting .= "Using birdhive_get_default_taxonomy"; // tft
+            $ts_info .= "Using birdhive_get_default_taxonomy"; // tft
             $taxonomy = birdhive_get_default_taxonomy($post_type);
         }
 
@@ -937,7 +938,7 @@ function birdhive_get_posts ( $a = array() ) {
 		} else if ( is_category() ) {
 
             // Post category archive
-            $troubleshooting .= "is_category (archive)<br />";
+            $ts_info .= "is_category (archive)<br />";
 
             // Get archive cat_id
             // TODO: designate instead via CMS options?
@@ -970,7 +971,7 @@ function birdhive_get_posts ( $a = array() ) {
 
         } else if ( $taxonomy && $tax_terms ) {
 
-            $troubleshooting .= "Building tax_query based on taxonomy & tax_terms.<br />";
+            $ts_info .= "Building tax_query based on taxonomy & tax_terms.<br />";
 
             $args['tax_query'] = array(
                 array(
@@ -1076,13 +1077,13 @@ function birdhive_get_posts ( $a = array() ) {
     // -------
 	$arr_posts = new WP_Query( $args );
     
-    $troubleshooting .= "WP_Query run as follows:";
-    $troubleshooting .= "<pre>args: ".print_r($args, true)."</pre>"; // tft
-    //$troubleshooting .= "<pre>meta_query: ".print_r($meta_query, true)."</pre>"; // tft
-	//$troubleshooting .= "<pre>arr_posts: ".print_r($arr_posts, true)."</pre>"; // tft
+    $ts_info .= "WP_Query run as follows:";
+    $ts_info .= "<pre>args: ".print_r($args, true)."</pre>"; // tft
+    //$ts_info .= "<pre>meta_query: ".print_r($meta_query, true)."</pre>"; // tft
+	//$ts_info .= "<pre>arr_posts: ".print_r($arr_posts, true)."</pre>"; // tft
 
-    $troubleshooting .= "birdhive_get_posts arr_posts->request<pre>".$arr_posts->request."</pre>"; // tft -- wip
-    $troubleshooting .= "birdhive_get_posts last_query:<pre>".$wpdb->last_query."</pre>"; // tft
+    $ts_info .= "birdhive_get_posts arr_posts->request<pre>".$arr_posts->request."</pre>"; // tft -- wip
+    $ts_info .= "birdhive_get_posts last_query:<pre>".$wpdb->last_query."</pre>"; // tft
     
     //$info = '<div class="troubleshooting">'.$info.'</div>';
     
@@ -1102,7 +1103,7 @@ function birdhive_display_posts ( $atts = [] ) {
 //function birdhive_display_posts ( $args = array() ) {
     global $wpdb;
 	$info = "";
-	$troubleshooting = "";
+	$ts_info = "";
 	
 	/*
     // Defaults
@@ -1213,40 +1214,40 @@ function birdhive_display_posts ( $atts = [] ) {
         
         // Posts by ID -- translate to fit EM search attributes (https://wp-events-plugin.com/documentation/event-search-attributes/)
 		if ( isset($a['ids']) && !empty($a['ids']) ) {
-			$troubleshooting .= "Getting posts by IDs: ".$a['ids']."<br />";
+			$ts_info .= "Getting posts by IDs: ".$a['ids']."<br />";
 			//$em_args['event'] = $a['ids'];
 			$em_args['post_id'] = $a['ids'];
 		}
-        if ( $em_args ) { $troubleshooting .= 'shortcode_atts as passed to EM_Events::get <pre>'.print_r($em_args, true).'</pre>'; } // tft
+        if ( $em_args ) { $ts_info .= 'shortcode_atts as passed to EM_Events::get <pre>'.print_r($em_args, true).'</pre>'; } // tft
         
         $posts = EM_Events::get( $em_args ); // Retrieves an array of EM_Event Objects
         
-        //$troubleshooting .= 'Posts retrieved using EM_Events::get: <pre>';
+        //$ts_info .= 'Posts retrieved using EM_Events::get: <pre>';
         
         foreach ( $posts as $post ) {
-            //$troubleshooting .= "post: ".print_r($post, true)."<br />";
-            $troubleshooting .= "post_id: ".$post->post_id."<br />";
-            //$troubleshooting .= "event_attributes: ".print_r($post->event_attributes, true)."<br />";
-            if ( isset($post->event_attributes['event_series']) ) { $troubleshooting .= "event_series: ".$post->event_attributes['event_series']."<br />"; }
+            //$ts_info .= "post: ".print_r($post, true)."<br />";
+            $ts_info .= "post_id: ".$post->post_id."<br />";
+            //$ts_info .= "event_attributes: ".print_r($post->event_attributes, true)."<br />";
+            if ( isset($post->event_attributes['event_series']) ) { $ts_info .= "event_series: ".$post->event_attributes['event_series']."<br />"; }
         }
-        //$troubleshooting .= 'last_query: '.print_r( $wpdb->last_query, true); // '<pre></pre>'
-        $troubleshooting .= '</pre>'; // tft
+        //$ts_info .= 'last_query: '.print_r( $wpdb->last_query, true); // '<pre></pre>'
+        $ts_info .= '</pre>'; // tft
     
     } else {
     	
     	// NOT events
     	
-    	if ( $a ) { $troubleshooting .= 'shortcode_atts as passed to birdhive_get_posts: <pre>'.print_r($a, true).'</pre>'; } // tft
+    	if ( $a ) { $ts_info .= 'shortcode_atts as passed to birdhive_get_posts: <pre>'.print_r($a, true).'</pre>'; } // tft
     	
         $posts_info = birdhive_get_posts( $a );
         $posts = $posts_info['arr_posts']->posts; // Retrieves an array of WP_Post Objects
         $info .= $posts_info['info'];
-        $troubleshooting .= $posts_info['troubleshooting'];
+        $ts_info .= $posts_info['troubleshooting'];
     }
     
     if ( $posts ) {
         
-        $troubleshooting .= '<pre>'.print_r($posts, true).'</pre>'; // tft
+        $ts_info .= '<pre>'.print_r($posts, true).'</pre>'; // tft
         
 		//if ($a['header'] == 'true') { $info .= '<h3>Latest '.$category.' Articles:</h3>'; } // WIP
 		$info .= '<div class="dp-posts">';
@@ -1298,8 +1299,8 @@ function birdhive_display_posts ( $atts = [] ) {
         
         foreach ( $posts as $post ) {
             
-            //$troubleshooting .= '<pre>'.print_r($post, true).'</pre>'; // tft
-            //$troubleshooting .= 'post: <pre>'.print_r($post, true).'</pre>'; // tft
+            //$ts_info .= '<pre>'.print_r($post, true).'</pre>'; // tft
+            //$ts_info .= 'post: <pre>'.print_r($post, true).'</pre>'; // tft
             
             if ( post_type_exists('event') && $post_type == 'event' ) {
                 $post_id = $post->post_id;
@@ -1504,7 +1505,7 @@ function birdhive_display_posts ( $atts = [] ) {
     
     }  else {
         
-        $troubleshooting .= "No posts found!";
+        $ts_info .= "No posts found!";
         
     } // END if posts
     
@@ -1594,12 +1595,12 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
 	*/
 	
 	$info = "";
-    $troubleshooting = "";
+    $ts_info = "";
     //$search_values = false; // var to track whether any search values have been submitted on which to base the search
     $search_values = array(); // var to track whether any search values have been submitted and to which post_types they apply
     
-    $troubleshooting .= '_GET: <pre>'.print_r($_GET,true).'</pre>'; // tft
-    //$troubleshooting .= '_REQUEST: <pre>'.print_r($_REQUEST,true).'</pre>'; // tft
+    $ts_info .= '_GET: <pre>'.print_r($_GET,true).'</pre>'; // tft
+    //$ts_info .= '_REQUEST: <pre>'.print_r($_REQUEST,true).'</pre>'; // tft
         
 	$a = shortcode_atts( array(
 		'post_type'    => 'post',
@@ -1874,14 +1875,14 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                             // instead of boolean, create a search_values array? and track which post_type they relate to?
                             $search_values[] = array( 'field_post_type' => $field_post_type, 'arr_field' => $arr_field, 'field_name' => $field_name, 'field_value' => $field_value );
                             //$field_info .= "field value: $field_value<br />"; 
-                            //$troubleshooting .= "query_assignment for field_name $field_name is *$query_assignment* >> search value: '$field_value'<br />";
+                            //$ts_info .= "query_assignment for field_name $field_name is *$query_assignment* >> search value: '$field_value'<br />";
                             
                             if ( $query_assignment == "primary" ) {
                                 $search_primary_post_type = true;
-                                $troubleshooting .= ">> Setting search_primary_post_type var to TRUE based on field $field_name searching value $field_value<br />";
+                                $ts_info .= ">> Setting search_primary_post_type var to TRUE based on field $field_name searching value $field_value<br />";
                             } else {
                                 $search_related_post_type = true;
-                                $troubleshooting .= ">> Setting search_related_post_type var to TRUE based on field $field_name searching value $field_value<br />";
+                                $ts_info .= ">> Setting search_related_post_type var to TRUE based on field $field_name searching value $field_value<br />";
                             }
                             
                         }
@@ -2312,7 +2313,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                     
                     if ( !empty($options) ) { // WIP // && strpos($input_class, "combobox")
 
-                        //if ( !empty($field_value) ) { $troubleshooting .= "options: <pre>".print_r($options, true)."</pre>"; } // tft
+                        //if ( !empty($field_value) ) { $ts_info .= "options: <pre>".print_r($options, true)."</pre>"; } // tft
 
                         $input_class .= " combobox"; // tft
                                                 
@@ -2349,15 +2350,15 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                     //$info .= '<!-- '."\n".$field_info."\n".' -->';
                 }
                 
-                //$troubleshooting .= "+++++<br />FIELD INFO<br/>+++++<br />".$field_info."<br />";
+                //$ts_info .= "+++++<br />FIELD INFO<br/>+++++<br />".$field_info."<br />";
                 //if ( strpos($field_name, "publisher") || strpos($field_name, "devmode") || strpos($arr_field, "devmode") || $field_name == "devmode" ) {
                 if ( (!empty($field_value) && $field_name != 'search_operator' && $field_name != 'devmode' ) ||
                    ( !empty($options_posts) && count($options_posts) > 0 ) ||
                    strpos($field_name, "liturgical") ) {
-                    $troubleshooting .= "+++++<br />FIELD INFO<br/>+++++<br />".$field_info."<br />";
+                    $ts_info .= "+++++<br />FIELD INFO<br/>+++++<br />".$field_info."<br />";
                 }
                 //$field_name == "liturgical_date" || $field_name == "repertoire_litdates" || 
-                //if ( !empty($field_value) ) { $troubleshooting .= "+++++<br />FIELD INFO<br/>+++++<br />".$field_info."<br />"; }
+                //if ( !empty($field_value) ) { $ts_info .= "+++++<br />FIELD INFO<br/>+++++<br />".$field_info."<br />"; }
                 
             } // End conditional for actual search fields
             
@@ -2372,33 +2373,33 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
         $args_related = null; // init
         $mq_components = array();
         $tq_components = array();
-        //$troubleshooting .= "mq_components_primary: <pre>".print_r($mq_components_primary,true)."</pre>"; // tft
-        //$troubleshooting .= "tq_components_primary: <pre>".print_r($tq_components_primary,true)."</pre>"; // tft
-        //$troubleshooting .= "mq_components_related: <pre>".print_r($mq_components_related,true)."</pre>"; // tft
-        //$troubleshooting .= "tq_components_related: <pre>".print_r($tq_components_related,true)."</pre>"; // tft
+        //$ts_info .= "mq_components_primary: <pre>".print_r($mq_components_primary,true)."</pre>"; // tft
+        //$ts_info .= "tq_components_primary: <pre>".print_r($tq_components_primary,true)."</pre>"; // tft
+        //$ts_info .= "mq_components_related: <pre>".print_r($mq_components_related,true)."</pre>"; // tft
+        //$ts_info .= "tq_components_related: <pre>".print_r($tq_components_related,true)."</pre>"; // tft
         
         // If field values were found related to both post types,
         // AND if we're searching for posts that match ALL terms (search_operator: "and"),
         // then set up a second set of args/birdhive_get_posts
         if ( $search_primary_post_type == true && $search_related_post_type == true && $search_operator == "and" ) { 
-            $troubleshooting .= "Querying both primary and related post_types (two sets of args)<br />";
+            $ts_info .= "Querying both primary and related post_types (two sets of args)<br />";
             $args_related = $args;
             $args_related['post_type'] = $related_post_type; // reset post_type            
         } else if ( $search_primary_post_type == true && $search_related_post_type == true && $search_operator == "or" ) { 
             // WIP -- in this case
-            $troubleshooting .= "Querying both primary and related post_types (two sets of args) but with OR operator... WIP<br />";
+            $ts_info .= "Querying both primary and related post_types (two sets of args) but with OR operator... WIP<br />";
             //$args_related = $args;
             //$args_related['post_type'] = $related_post_type; // reset post_type            
         } else {
             if ( $search_primary_post_type == true ) {
                 // Searching primary post_type only
-                $troubleshooting .= "Searching primary post_type only<br />";
+                $ts_info .= "Searching primary post_type only<br />";
                 $args['post_type'] = $post_type;
                 $mq_components = $mq_components_primary;
                 $tq_components = $tq_components_primary;
             } else if ( $search_related_post_type == true ) {
                 // Searching related post_type only
-                $troubleshooting .= "Searching related post_type only<br />";
+                $ts_info .= "Searching related post_type only<br />";
                 $args['post_type'] = $related_post_type;
                 $mq_components = $mq_components_related;
                 $tq_components = $tq_components_related;
@@ -2418,7 +2419,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                 $meta_query['relation'] = $search_operator;
             }
             if ( count($mq_components) == 1) {
-                //$troubleshooting .= "Single mq_component.<br />";
+                //$ts_info .= "Single mq_component.<br />";
                 $meta_query = $mq_components; //$meta_query = $mq_components[0];
             } else {
                 foreach ( $mq_components AS $component ) {
@@ -2516,12 +2517,12 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
         // If search values have been submitted, then run the search query
         if ( count($search_values) > 0 ) {
             
-            $troubleshooting .= "About to pass args to birdhive_get_posts: <pre>".print_r($args,true)."</pre>"; // tft
+            $ts_info .= "About to pass args to birdhive_get_posts: <pre>".print_r($args,true)."</pre>"; // tft
             
             // Get posts matching the assembled args
             /* ===================================== */
             if ( $form_type == "advanced_search" ) {
-                //$troubleshooting .= "<strong>NB: search temporarily disabled for troubleshooting.</strong><br />"; $posts_info = array(); // tft
+                //$ts_info .= "<strong>NB: search temporarily disabled for troubleshooting.</strong><br />"; $posts_info = array(); // tft
                 $posts_info = birdhive_get_posts( $args );
             } else {
                 $posts_info = birdhive_get_posts( $args );
@@ -2530,38 +2531,38 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
             if ( isset($posts_info['arr_posts']) ) {
                 
                 $arr_post_ids = $posts_info['arr_posts']->posts; // Retrieves an array of IDs (based on return_fields: 'ids')
-                $troubleshooting .= "Num arr_post_ids: [".count($arr_post_ids)."]<br />";
-                //$troubleshooting .= "arr_post_ids: <pre>".print_r($arr_post_ids,true)."</pre>"; // tft
+                $ts_info .= "Num arr_post_ids: [".count($arr_post_ids)."]<br />";
+                //$ts_info .= "arr_post_ids: <pre>".print_r($arr_post_ids,true)."</pre>"; // tft
                 
                 $info .= '<div class="troubleshooting">'.$posts_info['info'].'</div>';
-                //$troubleshooting .= $posts_info['info']."<hr />";
+                //$ts_info .= $posts_info['info']."<hr />";
                 //$info .= $posts_info['info']."<hr />"; //$info .= "birdhive_get_posts/posts_info: ".$posts_info['info']."<hr />";
                 
                 // Print last SQL query string
                 global $wpdb;
                 $info .= '<div class="troubleshooting">'."last_query:<pre>".$wpdb->last_query."</pre>".'</div>'; // tft
-                //$troubleshooting .= "<p>last_query:</p><pre>".$wpdb->last_query."</pre>"; // tft
+                //$ts_info .= "<p>last_query:</p><pre>".$wpdb->last_query."</pre>"; // tft
                 
             }
             
             if ( $args_related ) {
                 
-                $troubleshooting .= "About to pass args_related to birdhive_get_posts: <pre>".print_r($args_related,true)."</pre>"; // tft
+                $ts_info .= "About to pass args_related to birdhive_get_posts: <pre>".print_r($args_related,true)."</pre>"; // tft
                 
-                $troubleshooting .= "<strong>NB: search temporarily disabled for troubleshooting.</strong><br />"; $related_posts_info = array(); // tft
+                $ts_info .= "<strong>NB: search temporarily disabled for troubleshooting.</strong><br />"; $related_posts_info = array(); // tft
                 //$related_posts_info = birdhive_get_posts( $args_related );
                 
                 if ( isset($related_posts_info['arr_posts']) ) {
                 
                     $arr_related_post_ids = $related_posts_info['arr_posts']->posts;
-                    $troubleshooting .= "Num arr_related_post_ids: [".count($arr_related_post_ids)."]<br />";
-                    //$troubleshooting .= "arr_related_post_ids: <pre>".print_r($arr_related_post_ids,true)."</pre>"; // tft
+                    $ts_info .= "Num arr_related_post_ids: [".count($arr_related_post_ids)."]<br />";
+                    //$ts_info .= "arr_related_post_ids: <pre>".print_r($arr_related_post_ids,true)."</pre>"; // tft
 
-                    $troubleshooting .= $related_posts_info['info'];
+                    $ts_info .= $related_posts_info['info'];
 
                     // Print last SQL query string
                     global $wpdb;
-                    $troubleshooting .= "last_query: <pre>".$wpdb->last_query."</pre>"; // tft
+                    $ts_info .= "last_query: <pre>".$wpdb->last_query."</pre>"; // tft
                     
                     // WIP -- we're running an "and" so we need to find the OVERLAP between the two sets of ids... one set of repertoire ids, one of editions... hmm...
                     if ( !empty($arr_post_ids) ) {
@@ -2574,9 +2575,9 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                         // TODO: eliminate redundancy
                         if ( count($arr_post_ids) > count($arr_related_post_ids) ) {
                             // more rep than edition records
-                            $troubleshooting .= "more rep than edition records >> loop through arr_related_post_ids<br />";
+                            $ts_info .= "more rep than edition records >> loop through arr_related_post_ids<br />";
                             foreach ( $arr_related_post_ids as $tmp_id ) {
-                                $troubleshooting .= "tmp_id: $tmp_id<br />";
+                                $ts_info .= "tmp_id: $tmp_id<br />";
                                 $tmp_posts = get_field($related_post_field_name, $tmp_id); // repertoire_editions
                                 if ( empty($tmp_posts) ) { $tmp_posts = get_field('musical_work', $tmp_id); } // WIP/tmp
                                 if ( $tmp_posts ) {
@@ -2591,18 +2592,18 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                                         if ( in_array($tmp_match_id, $arr_post_ids) ) {
                                             // it's a full match -- keep it
                                             $full_match_ids[] = $tmp_match_id;
-                                            $troubleshooting .= "$related_post_field_name tmp_match_id: $tmp_match_id -- FOUND in arr_post_ids<br />";
+                                            $ts_info .= "$related_post_field_name tmp_match_id: $tmp_match_id -- FOUND in arr_post_ids<br />";
                                         } else {
-                                            $troubleshooting .= "$related_post_field_name tmp_match_id: $tmp_match_id -- NOT found in arr_post_ids<br />";
+                                            $ts_info .= "$related_post_field_name tmp_match_id: $tmp_match_id -- NOT found in arr_post_ids<br />";
                                         }
                                     }
                                 } else {
-                                    $troubleshooting .= "No $related_post_field_name records found matching related_post_id $tmp_id<br />";
+                                    $ts_info .= "No $related_post_field_name records found matching related_post_id $tmp_id<br />";
                                 }
                             }
                         } else {
                             // more editions than rep records
-                            $troubleshooting .= "more editions than rep records >> loop through arr_post_ids<br />";
+                            $ts_info .= "more editions than rep records >> loop through arr_post_ids<br />";
                             foreach ( $arr_post_ids as $tmp_id ) {
                                 $tmp_posts = get_field($related_post_field_name, $tmp_id); // repertoire_editions
                                 if ( empty($tmp_posts) ) { $tmp_posts = get_field('related_editions', $tmp_id); } // WIP/tmp
@@ -2619,7 +2620,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                                             // it's a full match -- keep it
                                             $full_match_ids[] = $tmp_match_id;
                                         } else {
-                                            $troubleshooting .= "$related_post_field_name tmp_match_id: $tmp_match_id -- NOT in arr_related_post_ids<br />";
+                                            $ts_info .= "$related_post_field_name tmp_match_id: $tmp_match_id -- NOT in arr_related_post_ids<br />";
                                         }
                                     }
                                 }
@@ -2627,7 +2628,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                         }
                         //$arr_post_ids = array_merge($arr_post_ids, $arr_related_post_ids); // Merge $arr_related_posts into arr_post_ids -- nope, too simple
                         $arr_post_ids = $full_match_ids;
-                        $troubleshooting .= "Num full_match_ids: [".count($full_match_ids)."]".'</div>';
+                        $ts_info .= "Num full_match_ids: [".count($full_match_ids)."]".'</div>';
                         
                     } else {
                         $arr_post_ids = $arr_related_post_ids;
@@ -2640,7 +2641,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
             
             if ( !empty($arr_post_ids) ) {
                     
-                $troubleshooting .= "Num matching posts found (raw results): [".count($arr_post_ids)."]"; // tft -- if there are both rep and editions, it will likely be an overcount
+                $ts_info .= "Num matching posts found (raw results): [".count($arr_post_ids)."]"; // tft -- if there are both rep and editions, it will likely be an overcount
                 $info .= format_search_results($arr_post_ids);
 
             } else {
@@ -2654,33 +2655,33 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
                 
                 $arr_posts = $posts_info['arr_posts'];//$posts_info['arr_posts']->posts; // Retrieves an array of WP_Post Objects
                 
-                $troubleshooting .= $posts_info['info']."<hr />";
+                $ts_info .= $posts_info['info']."<hr />";
                 //$info .= $posts_info['info']."<hr />"; //$info .= "birdhive_get_posts/posts_info: ".$posts_info['info']."<hr />";
                 
                 if ( !empty($arr_posts) ) {
                     
-                    $troubleshooting .= "Num matching posts found (raw results): [".count($arr_posts->posts)."]"; 
+                    $ts_info .= "Num matching posts found (raw results): [".count($arr_posts->posts)."]"; 
                     //$info .= '<div class="troubleshooting">'."Num matching posts found (raw results): [".count($arr_posts->posts)."]".'</div>'; // tft -- if there are both rep and editions, it will likely be an overcount
                
                     if ( count($arr_posts->posts) == 0 ) { // || $form_type == "advanced_search"
-                        //$troubleshooting .= "args: <pre>".print_r($args,true)."</pre>"; // tft
+                        //$ts_info .= "args: <pre>".print_r($args,true)."</pre>"; // tft
                     }
                     
                     // Print last SQL query string
                     global $wpdb;
-                    $troubleshooting .= "<p>last_query:</p><pre>".$wpdb->last_query."</pre>"; // tft
+                    $ts_info .= "<p>last_query:</p><pre>".$wpdb->last_query."</pre>"; // tft
 
                     $info .= format_search_results($arr_posts);
                     
                 } // END if ( !empty($arr_posts) )
                 
             } else {
-                $troubleshooting .= "No arr_posts retrieved.<br />";
+                $ts_info .= "No arr_posts retrieved.<br />";
             }*/
             
         } else {
             
-            $troubleshooting .= "No search values submitted.<br />";
+            $ts_info .= "No search values submitted.<br />";
             
         }
         

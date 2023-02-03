@@ -1091,7 +1091,7 @@ function birdhive_get_posts ( $a = array() ) {
     $arr_posts_info['args'] = $args;
     $arr_posts_info['category_link'] = $category_link;
     $arr_posts_info['info'] = $info;
-    $arr_posts_info['troubleshooting'] = $troubleshooting;
+    $arr_posts_info['troubleshooting'] = $ts_info;
     
     return $arr_posts_info;
 }
@@ -2689,7 +2689,7 @@ function birdhive_search_form ($atts = [], $content = null, $tag = '') {
     } // END if ( $a['fields'] )
 
     $info .= '<div class="troubleshooting">';
-    $info .= $troubleshooting;
+    $info .= $ts_info;
     $info .= '</div>';
     
     return $info;

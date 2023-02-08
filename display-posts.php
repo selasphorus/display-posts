@@ -1123,7 +1123,7 @@ function birdhive_display_posts ( $atts = [] ) {
 	$a = shortcode_atts( array(
         
         'post_type' => 'post',
-        'limit' => 5,
+        'limit' => 15,
         'orderby' => 'title',
         'order' => 'ASC',
         'meta_key' => null,

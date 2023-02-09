@@ -44,6 +44,10 @@ $plugin_path = plugin_dir_path( __FILE__ );
 
 /* +~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+~+ */
 
+// Include custom post type (collection)
+$posttypes_filepath = $plugin_path . 'inc/'.'posttypes.php';
+if ( file_exists($posttypes_filepath) ) { include_once( $posttypes_filepath ); } else { echo "no $posttypes_filepath found"; }
+
 // Enqueue scripts and styles -- WIP
 add_action( 'wp_enqueue_scripts', 'dp_scripts_method' );
 function dp_scripts_method() {

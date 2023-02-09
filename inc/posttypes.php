@@ -34,7 +34,7 @@ function register_post_type_collection() {
 		'show_ui'            => true,
 		'show_in_menu'       => true,
 		'query_var'          => true,
-		'rewrite'            => array( 'slug' => 'link' ),
+		'rewrite'            => array( 'slug' => 'collection' ),
 		//'capability_type' => array('collection', 'collections'),
 		'map_meta_cap'       => true,
 		'has_archive'        => true,
@@ -46,7 +46,7 @@ function register_post_type_collection() {
 		'show_in_rest' => false, // i.e. false = use classic, not block editor
 	);
 
-	register_post_type( 'link', $args );
+	register_post_type( 'collection', $args );
 
 }
 add_action( 'init', 'register_post_type_collection' );

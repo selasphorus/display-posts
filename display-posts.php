@@ -900,7 +900,7 @@ function birdhive_get_posts ( $a = array() ) {
             $standard_orderby_values = array( 'none', 'ID', 'author', 'title', 'name', 'type', 'date', 'modified', 'parent', 'rand', 'comment_count', 'relevance', 'menu_order', 'meta_value', 'meta_value_num', 'post__in', 'post_name__in', 'post_parent__in' );
 
             // determine if orderby is actually meta_value or meta_value_num with orderby $a value to be used as meta_key
-            if ( !in_array( $a['orderby'], $standard_orderby_values) ) {
+            if ( !is_array($a['orderby']) && !in_array( $a['orderby'], $standard_orderby_values) ) {
                 // TODO: determine whether to sort meta values as numbers or as text
                 if (strpos($a['orderby'], 'num') !== false) {
                     $args['orderby'] = 'meta_value_num'; // or meta_value?
